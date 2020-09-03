@@ -83,7 +83,7 @@
                 <div class="title m-b-md">
                     Laravel
                 </div>
-
+            <!--
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
@@ -94,10 +94,11 @@
                     <a href="https://vapor.laravel.com">Vapor</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                     <br>
-                    <form action="{{action('SendController@write1')}}" method="post">
+            -->
+                    <form action="" method="post">
                     @csrf
-                    名前: <input type="text" name="name" />
-                    年齢: <input type="text" name="age" />
+                    <p>名前: <input type="text" name="name" /></p>
+                    <p>年齢: <input type="text" name="age" /></p>
                          <input type="submit" />
                     </form>
                 </div>
