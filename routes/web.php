@@ -17,7 +17,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', function () {
+    return view('login');
+});
+
 Route::get('/signup', function () {
     return view('signup');
 });
+
+Route::post('/user', 'UserController@create');
+Route::get('/user', function (){
+    return view('user');
+});
+
+Route::get('/password_reset', function () {
+    return view('password_reset');
+});
+
 

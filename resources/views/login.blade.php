@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新規ユーザ登録</title>
+    <title>ログイン</title>
+
     <style>
-    
         html, body {
             background-color: #DDDDDD;
             color: #000000;
@@ -40,6 +40,10 @@
             top: 30px;
             margin-bottom: 40px;
         }
+        .form_tag a {
+            margin-top: 20px;
+            display: block;
+        }
         input.form_input {
             width: calc(100% - 22px); /*padding-left つけてなくて-12%なので、paddingつけてたら-22%*/
             height: 40px;
@@ -55,55 +59,62 @@
             color: red;
             font-size: 12px;
         }
-        .button_tag{
+        .button_tag {
             background-color: #00DD00;
             width: 50%;
             margin: 0 auto;
         }
-        input#button{
+        input#button {
             width: 50%;
             /*inline要素なので、margin: 0 auto;が使えない（box要素なら使える）*/
             /*なので、divタグやpタグで囲って、そいつにmargin: 0 auto;を当てる */
             position: absolute;
-            bottom: 10%;
+            bottom: 20%;
             height: 40px;
             font-size: 20px;
+        }
+        #password_reset {
+            position: absolute;
+            left: 25%;
+            bottom: 10%;
+            /*background-color: black;*/
         }
         
     </style>
 </head>
 <body>
-    <div class="content">
-        <p class="title">会員情報入力</p>
+<div class="content">
+        <p class="title">ログイン</p>
         <hr>
-        <!-- フォームの自動補完機能をoffにするには、フォームまたは各inputタグの属性にautocomplete="off"を指定する。-->
-        <form action="{{action('UserController@create')}}" method="post" required>
+        <form action="{{action('UserController@create')}}" method="post">
         @csrf
-            <div class="form_tag">
-                <label>ニックネーム</label>
-                <input type="text" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
+    <!--    <div class="form_tag">
+                <label>ニックネーム</label> 
+                <input type="text" name="nickname" class="form_input" placeholder="ニックネーム" /*onclick="onClick_form(this)"*/ />
             </div>
-            <div class="form_tag">
-                <label>メールアドレス</label>
-                <input type="text" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  /*onmouseleave*/ onblur="check_email(this)" required/>
+    -->
+            <div class="form_tag">  
+    <!--        <label>メールアドレス</label>   -->
+                <input type="text" name="email" class="form_input" placeholder="メールアドレス" /*onclick="onClick_form(this)"*/ onmouseleave="check_email(this)"/>
             </div>
+    
             <div class="form_tag">
-                <label>パスワード</label>
-                <input type="text" name="password" class="form_input" placeholder="7文字以上の半角英数字" /*onmouseleave*/ onblur="check_password(this)" required/>
+    <!--        <label>パスワード</label>   -->
+                <input type="text" name="password" class="form_input" placeholder="パスワード" /*onclick="onClick_form(this)"*/ onmouseleave="check_password(this)"/>
+    <!--            <a href="/password_reset">パスワードをお忘れの方</a>  -->
             </div>
             <div class="button_tag">
                 <input type="submit" id="button" value="確認に進む"/>
             </div>
+            <div id="password_reset"><a href="/password_reset">パスワードをお忘れの方</a></div>
         </form>
 
         <script>
+            //エラーメッセージの表示変数
             var nickname_error_message_created = false;
             var email_error_message_created = false;
             var password_error_message_created = false;
 
-            function check_nickname(obj) {
-                
-            }
             function check_email(obj) {
                 //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9
                 var result = obj.value.match(/[\w\-._]+@[\w\-._]+\.[A-Za-z]+/);

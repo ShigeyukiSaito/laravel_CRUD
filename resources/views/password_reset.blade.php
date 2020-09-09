@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新規ユーザ登録</title>
+    <title>ログイン</title>
+
     <style>
-    
         html, body {
             background-color: #DDDDDD;
             color: #000000;
@@ -17,13 +17,13 @@
         .content {
             background-color: #FFFFFF;
             width: 40%;
+            height: 75%;
             margin: 0 auto;
             font-size: 15px;
             position: relative;
             top: 10%;
             text-align: left;
             vertical-align: middle;
-            height: 80%;
             padding-top:20px;
             
         }
@@ -40,6 +40,9 @@
             top: 30px;
             margin-bottom: 40px;
         }
+        .error_notice {
+            color: red;
+        }
         input.form_input {
             width: calc(100% - 22px); /*padding-left つけてなくて-12%なので、paddingつけてたら-22%*/
             height: 40px;
@@ -47,11 +50,14 @@
             padding-left: 16px;
             margin-top: 8px;
         }
-        #error_email {
-            color: red;
+        #notice {
+            color: #696969;
             font-size: 12px;
+            position: absolute;
+            left: 25%;
+            width: 50%;
         }
-        #error_password {
+        #error_email {
             color: red;
             font-size: 12px;
         }
@@ -73,37 +79,25 @@
     </style>
 </head>
 <body>
-    <div class="content">
-        <p class="title">会員情報入力</p>
+<div class="content">
+        <p class="title">パスワードをお忘れの方</p>
         <hr>
-        <!-- フォームの自動補完機能をoffにするには、フォームまたは各inputタグの属性にautocomplete="off"を指定する。-->
-        <form action="{{action('UserController@create')}}" method="post" required>
+        <form action="{{action('UserController@create')}}" method="post">
         @csrf
-            <div class="form_tag">
-                <label>ニックネーム</label>
-                <input type="text" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
-            </div>
-            <div class="form_tag">
+            <div class="form_tag">  
                 <label>メールアドレス</label>
-                <input type="text" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  /*onmouseleave*/ onblur="check_email(this)" required/>
+                <input type="text" name="email" class="form_input" placeholder="ご登録されたメールアドレス" onblur="check_email(this)" />
+                
             </div>
-            <div class="form_tag">
-                <label>パスワード</label>
-                <input type="text" name="password" class="form_input" placeholder="7文字以上の半角英数字" /*onmouseleave*/ onblur="check_password(this)" required/>
-            </div>
+            <div id="notice">ご登録されたメールアドレスに、パスワード再設定のご案内が送信されます。</div>
             <div class="button_tag">
-                <input type="submit" id="button" value="確認に進む"/>
+                <input type="submit" id="button" value="送信する"/>
             </div>
         </form>
-
         <script>
-            var nickname_error_message_created = false;
+            //エラーメッセージの表示変数
             var email_error_message_created = false;
-            var password_error_message_created = false;
 
-            function check_nickname(obj) {
-                
-            }
             function check_email(obj) {
                 //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9
                 var result = obj.value.match(/[\w\-._]+@[\w\-._]+\.[A-Za-z]+/);
@@ -155,59 +149,6 @@
             function change_email_error_message(message) {
                 //すでに作ったエラーのdivを拾ってきて
                 var errorMessage = document.getElementById('error_email');
-                //中身変える
-                errorMessage.innerHTML = message;
-            }
-
-            function check_password(obj) {
-                var result = obj.value.match(/[\w\-._]{7,30}/);
-                if(result != null) {
-                    //https://developer.mozilla.org/ja/docs/Web/API/Document/getElementsByTagName
-                    var errorMessage = document.getElementById('error_password');
-                    //エラーメッセージの削除メソッドについてはMozillaのサイトを参考https://developer.mozilla.org/ja/docs/Web/API/Node/removeChild
-                    if(errorMessage) {
-                        errorMessage.parentNode.removeChild(errorMessage);
-                        password_error_message_created = false;
-                    }
-                }
-                else if(result == null) {
-                    if(password_error_message_created == false) {
-                        //div生成チェック
-                        password_error_message_created = true;
-
-                        switch (obj.value) {
-                        case "":
-                            make_password_error_message(obj, "入力してください。");
-                            break;
-                        default :
-                            make_password_error_message(obj, "7文字以上30文字以下の半角英数字で入力してください");
-                        }
-                    }
-                    else if(password_error_message_created == true) {
-                        switch (obj.value) {
-                        case "":
-                            change_password_error_message("入力してください。");
-                            break;
-                        default :
-                            change_password_error_message("7文字以上30文字以下の半角英数字で入力してください");
-                        }
-                    }
-                }
-            }
-            //パスワード入力エラーメッセージ生成
-            function make_password_error_message(obj, message) {
-                //タグの生成
-                var errorMessage = document.createElement('div'); //pタグでもいい？
-                errorMessage.setAttribute('id', 'error_password');
-
-                //objの親要素に、子要素としてエラーメッセージを追加する
-                obj.parentNode.appendChild(errorMessage);
-                errorMessage.innerHTML = message;
-            }
-            //パスワード入力エラーメッセージ変更
-            function change_password_error_message(message) {
-                //すでに作ったエラーのdivを拾ってきて
-                var errorMessage = document.getElementById('error_password');
                 //中身変える
                 errorMessage.innerHTML = message;
             }
