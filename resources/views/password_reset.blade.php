@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン</title>
+    <title>パスワードリセット</title>
 
     <style>
         html, body {
@@ -86,8 +86,7 @@
         @csrf
             <div class="form_tag">  
                 <label>メールアドレス</label>
-                <input type="text" name="email" class="form_input" placeholder="ご登録されたメールアドレス" onblur="check_email(this)" />
-                
+                <input type="text" name="email" class="form_input" placeholder="ご登録されたメールアドレス" /*onmouseleave*/ onblur="check_email(this)" />
             </div>
             <div id="notice">ご登録されたメールアドレスに、パスワード再設定のご案内が送信されます。</div>
             <div class="button_tag">
@@ -117,38 +116,38 @@
                         email_error_message_created = true;
 
                         switch (obj.value) {
-                        case "":
-                            make_email_error_message(obj, "入力してください。");
-                            break;
-                        default :
-                            make_email_error_message(obj, "メールアドレスが不正です。");
+                            case "":
+                                make_error_message(obj, 'error_email', "入力してください。");
+                                break;
+                            default :
+                                make_error_message(obj, 'error_email', "フォーマットが正しくありません。");
                         }
                     }
                     else if(email_error_message_created == true) {
                         switch (obj.value) {
-                        case "":
-                            change_email_error_message("入力してください。");
-                            break;
-                        default :
-                            change_email_error_message("メールアドレスが不正です。");
+                            case "":
+                                change_error_massage('error_email', "入力してください。");
+                                break;
+                            default :
+                                change_error_massage('error_email', "フォーマットが正しくありません。");   
                         }
                     }
                 }
             }
-            //メール入力エラーメッセージ生成
-            function make_email_error_message(obj, message) {
+            //エラーメッセージ生成
+            function make_error_message(obj, id, message) {
                 //タグの生成
-                var errorMessage = document.createElement('div'); //pタグでもいい？
-                errorMessage.setAttribute('id', 'error_email');
+                var errorMessage = document.createElement('div'); 
+                errorMessage.setAttribute('id', id/*'error_password'など*/);
 
                 //objの親要素に、子要素としてエラーメッセージを追加する
                 obj.parentNode.appendChild(errorMessage);
                 errorMessage.innerHTML = message;
             }
-            //メール入力エラーメッセージ変更
-            function change_email_error_message(message) {
+            //エラーメッセージ変更
+            function change_error_massage(id, message) {
                 //すでに作ったエラーのdivを拾ってきて
-                var errorMessage = document.getElementById('error_email');
+                var errorMessage = document.getElementById(id/*'error_password'など*/);
                 //中身変える
                 errorMessage.innerHTML = message;
             }

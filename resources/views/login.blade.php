@@ -77,7 +77,6 @@
             position: absolute;
             left: 25%;
             bottom: 10%;
-            /*background-color: black;*/
         }
         
     </style>
@@ -88,20 +87,14 @@
         <hr>
         <form action="{{action('UserController@create')}}" method="post">
         @csrf
-    <!--    <div class="form_tag">
-                <label>ニックネーム</label> 
-                <input type="text" name="nickname" class="form_input" placeholder="ニックネーム" /*onclick="onClick_form(this)"*/ />
-            </div>
-    -->
             <div class="form_tag">  
     <!--        <label>メールアドレス</label>   -->
-                <input type="text" name="email" class="form_input" placeholder="メールアドレス" /*onclick="onClick_form(this)"*/ onmouseleave="check_email(this)"/>
+                <input type="text" name="email" class="form_input" placeholder="メールアドレス" /*onmouseleave*/ onblur="check_email(this)"/>
             </div>
-    
             <div class="form_tag">
     <!--        <label>パスワード</label>   -->
-                <input type="text" name="password" class="form_input" placeholder="パスワード" /*onclick="onClick_form(this)"*/ onmouseleave="check_password(this)"/>
-    <!--            <a href="/password_reset">パスワードをお忘れの方</a>  -->
+                <input type="text" name="password" class="form_input" placeholder="パスワード" /*onmouseleave*/ onblur="check_password(this)"/>
+    <!--        <a href="/password_reset">パスワードをお忘れの方</a>  -->
             </div>
             <div class="button_tag">
                 <input type="submit" id="button" value="確認に進む"/>
@@ -134,42 +127,24 @@
                         email_error_message_created = true;
 
                         switch (obj.value) {
-                        case "":
-                            make_email_error_message(obj, "入力してください。");
-                            break;
-                        default :
-                            make_email_error_message(obj, "メールアドレスが不正です。");
+                            case "":
+                                make_error_message(obj, 'error_email', "入力してください。");
+                                break;
+                            default :
+                                make_error_message(obj, 'error_email', "フォーマットが正しくありません。");
                         }
                     }
                     else if(email_error_message_created == true) {
                         switch (obj.value) {
-                        case "":
-                            change_email_error_message("入力してください。");
-                            break;
-                        default :
-                            change_email_error_message("メールアドレスが不正です。");
+                            case "":
+                                change_error_massage('error_email', "入力してください。");
+                                break;
+                            default :
+                                change_error_massage('error_email', "フォーマットが正しくありません。");   
                         }
                     }
                 }
             }
-            //メール入力エラーメッセージ生成
-            function make_email_error_message(obj, message) {
-                //タグの生成
-                var errorMessage = document.createElement('div'); //pタグでもいい？
-                errorMessage.setAttribute('id', 'error_email');
-
-                //objの親要素に、子要素としてエラーメッセージを追加する
-                obj.parentNode.appendChild(errorMessage);
-                errorMessage.innerHTML = message;
-            }
-            //メール入力エラーメッセージ変更
-            function change_email_error_message(message) {
-                //すでに作ったエラーのdivを拾ってきて
-                var errorMessage = document.getElementById('error_email');
-                //中身変える
-                errorMessage.innerHTML = message;
-            }
-
             function check_password(obj) {
                 var result = obj.value.match(/[\w\-._]{7,30}/);
                 if(result != null) {
@@ -185,40 +160,39 @@
                     if(password_error_message_created == false) {
                         //div生成チェック
                         password_error_message_created = true;
-
                         switch (obj.value) {
-                        case "":
-                            make_password_error_message(obj, "入力してください。");
-                            break;
-                        default :
-                            make_password_error_message(obj, "7文字以上30文字以下の半角英数字で入力してください");
+                            case "":
+                                make_error_message(obj, 'error_password', "入力してください。");
+                                break;
+                            default :
+                                make_error_message(obj, 'error_password', "7文字以上30文字以下の半角英数字で入力してください");
+                            }
                         }
-                    }
                     else if(password_error_message_created == true) {
                         switch (obj.value) {
-                        case "":
-                            change_password_error_message("入力してください。");
-                            break;
-                        default :
-                            change_password_error_message("7文字以上30文字以下の半角英数字で入力してください");
+                            case "":
+                                change_error_massage('error_password', "入力してください。");
+                                break;
+                            default :
+                                change_error_massage('error_password', "7文字以上30文字以下の半角英数字で入力してください");                                
                         }
                     }
                 }
             }
-            //パスワード入力エラーメッセージ生成
-            function make_password_error_message(obj, message) {
+            //エラーメッセージ生成
+            function make_error_message(obj, id, message) {
                 //タグの生成
-                var errorMessage = document.createElement('div'); //pタグでもいい？
-                errorMessage.setAttribute('id', 'error_password');
+                var errorMessage = document.createElement('div'); 
+                errorMessage.setAttribute('id', id/*'error_password'など*/);
 
                 //objの親要素に、子要素としてエラーメッセージを追加する
                 obj.parentNode.appendChild(errorMessage);
                 errorMessage.innerHTML = message;
             }
-            //パスワード入力エラーメッセージ変更
-            function change_password_error_message(message) {
+            //エラーメッセージ変更
+            function change_error_massage(id, message) {
                 //すでに作ったエラーのdivを拾ってきて
-                var errorMessage = document.getElementById('error_password');
+                var errorMessage = document.getElementById(id/*'error_password'など*/);
                 //中身変える
                 errorMessage.innerHTML = message;
             }
