@@ -53,7 +53,7 @@
 </head>
 <body>
     <header> 
-        <label>ユーザページ</label>
+        <label>{{$user->nickname}}のページ</label>
     </header>
     
     <main>

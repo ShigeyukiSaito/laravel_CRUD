@@ -35,3 +35,7 @@ Route::get('/password_reset', function () {
 });
 
 
+//react 導入して--authやったら、下記が追加された。
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

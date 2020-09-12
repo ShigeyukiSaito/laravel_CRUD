@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-//use App\User;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+//use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -27,6 +29,16 @@ class UserController extends Controller
         }
         */
         
+        //モデルを用いたDB追加
+        $user = new User;
+        
+        $user->nickname = $request->nickname;
+        $user->email = $request->email;
+        $user->password = $request->password;
+
+        $user->save();
+        return view('user', compact('user'));
+/*
         //Qiitaのサイト見て
         $nickname = $request->input('nickname');
         $email = $request->input('email');
@@ -35,8 +47,8 @@ class UserController extends Controller
         //DBへデータ追加
         //Laravelドキュメント見て作成。idはauto_inclementだから自動で追加される。
         DB::insert('insert into users (nickname, email, password) values (?, ?, ?)', [$nickname, $email, $password]);
-
-        return view('user', compact('nickname', 'email', 'password'));
+*/
+        //return view('user', compact('nickname', 'email', 'password'));
 
         /*
         //上の各変数は以下のように一括してuserページに渡すことも可能。
