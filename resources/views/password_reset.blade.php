@@ -94,16 +94,26 @@
             </div>
         </form>
         <script>
-            //エラーメッセージの表示変数
-            var email_error_message_created = false;
+            //各フォームの正規表現（RegExp）
+            const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
+
+            //エラーメッセージを生成したかどうかのチェック
+            let email_error_message_created = false;
+            
+            //エラーメッセージのタグid
+            const email_error_id = "error_email";
+
+            //エラーメッセージの内容
+            const null_error_message = "入力してください。";
+            const email_error_message = "フォーマットが正しくありません。";
 
             function check_email(obj) {
                 //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9
-                var result = obj.value.match(/[\w\-._]+@[\w\-._]+\.[A-Za-z]+/);
+                let result = obj.value.match(match_email);
 
                 if(result != null) {
                     //https://developer.mozilla.org/ja/docs/Web/API/Document/getElementsByTagName
-                    var errorMessage = document.getElementById('error_email');
+                    const errorMessage = document.getElementById(email_error_id);
                     //エラーメッセージの削除メソッドについてはMozillaのサイトを参考https://developer.mozilla.org/ja/docs/Web/API/Node/removeChild
                     if(errorMessage) {
                         errorMessage.parentNode.removeChild(errorMessage);
@@ -117,19 +127,19 @@
 
                         switch (obj.value) {
                             case "":
-                                make_error_message(obj, 'error_email', "入力してください。");
+                                make_error_message(obj, email_error_id, null_error_message);
                                 break;
                             default :
-                                make_error_message(obj, 'error_email', "フォーマットが正しくありません。");
+                                make_error_message(obj, email_error_id, email_error_message);
                         }
                     }
                     else if(email_error_message_created == true) {
                         switch (obj.value) {
                             case "":
-                                change_error_massage('error_email', "入力してください。");
+                                change_error_massage(email_error_id, null_error_message);
                                 break;
                             default :
-                                change_error_massage('error_email', "フォーマットが正しくありません。");   
+                                change_error_massage(email_error_id, email_error_message);   
                         }
                     }
                 }
@@ -137,8 +147,8 @@
             //エラーメッセージ生成
             function make_error_message(obj, id, message) {
                 //タグの生成
-                var errorMessage = document.createElement('div'); 
-                errorMessage.setAttribute('id', id/*'error_password'など*/);
+                const errorMessage = document.createElement('div'); 
+                errorMessage.setAttribute('id', id);
 
                 //objの親要素に、子要素としてエラーメッセージを追加する
                 obj.parentNode.appendChild(errorMessage);
@@ -147,7 +157,7 @@
             //エラーメッセージ変更
             function change_error_massage(id, message) {
                 //すでに作ったエラーのdivを拾ってきて
-                var errorMessage = document.getElementById(id/*'error_password'など*/);
+                let errorMessage = document.getElementById(id);
                 //中身変える
                 errorMessage.innerHTML = message;
             }
