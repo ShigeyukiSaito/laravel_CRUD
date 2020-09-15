@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Laravel\Socialite\Facades\Socialite;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -36,5 +38,49 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    //Googleログイン関連
+    public function redirectToGoogle()
+    {
+        // Google へのリダイレクト
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        // Google 認証後の処理
+        // あとで処理を追加しますが、とりあえず dd() で取得するユーザー情報を確認
+        $gUser = Socialite::driver('google')->stateless()->user();
+        //dd($gUser);//リダイレクトページに、ログイン承認されたユーザの情報がJSONで渡される。
+
+        $user = User::where('email', $gUser->email)->first();
+        // 見つからなければ新しくユーザーを作成
+        if ($user == null) {
+            $user = $this->createUserByGoogle($gUser);
+        }
+        // ログイン処理
+        \Auth::login($user, true);
+        return redirect('/home');
+    }
+
+    public function createUserByGoogle($gUser)
+    {
+        //Qiita記事を参照
+        $user = User::create([
+            'nickname'     => $gUser->name,
+            'email'    => $gUser->email,
+            'password' => \Hash::make(uniqid()), //ここよくわからん
+        ]);
+        /*ユーザ登録機能は、以下のようにUserControllerとほぼ同じでも良い
+        $user = new User;
+        
+        $user->nickname = $gUser->name;
+        $user->email = $gUser->email;
+        $user->password = \Hash::make(uniqid());//$gUser->passwordはダメ。なぜなら、$gUserにpasswordは存在しないから。;
+        
+        $user->save();
+        */
+        return $user;
     }
 }

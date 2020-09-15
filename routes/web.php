@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function () {
+Route::get('/signin', function () {
     return view('login');
 });
 
@@ -39,3 +39,8 @@ Route::get('/password_reset', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Googleへのリダイレクト
+Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
+//Googleから本アプリへ戻ってくる
+Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');

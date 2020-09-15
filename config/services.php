@@ -30,4 +30,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('APP_URL') . '/login/google/callback',
+        //下の書き方でも可能
+        //'redirect' => 'http://localhost:8000/login/google/callback',
+        
+        //この下の書き方が間違ってた。
+        //'redirect' => 'localhost:8000/login/google/callback',
+    ],
+
 ];
