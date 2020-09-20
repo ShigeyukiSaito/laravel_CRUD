@@ -17,13 +17,13 @@
         .content {
             background-color: #FFFFFF;
             width: 40%;
+            height: 80%;
             margin: 0 auto;
             font-size: 15px;
             position: relative;
             top: 10%;
             text-align: left;
             vertical-align: middle;
-            height: 80%;
             padding-top:20px;
             
         }
@@ -32,13 +32,17 @@
             font-size: 25px;
             font-weight: bolder;
         }
+        #form_tags {
+            height: 70%;
+        }
         .form_tag {
             width: 50%;
+            height: 26%;
             margin: 0 auto;
             /*background-color: #00DD00;*/
             position: relative;
-            top: 30px;
-            margin-bottom: 40px;
+            top: 60px;
+            /*margin-bottom: 25px;*/
         }
         input.form_input {
             width: calc(100% - 22px); /*padding-left つけてなくて-12%なので、paddingつけてたら-22%*/
@@ -65,7 +69,7 @@
             /*inline要素なので、margin: 0 auto;が使えない（box要素なら使える）*/
             /*なので、divタグやpタグで囲って、そいつにmargin: 0 auto;を当てる */
             position: absolute;
-            bottom: 10%;
+            bottom: 8%;
             height: 40px;
             font-size: 20px;
         }
@@ -77,7 +81,7 @@
         <p class="title">会員情報入力</p>
         <hr>
         <!-- フォームの自動補完機能をoffにするには、フォームまたは各inputタグの属性にautocomplete="off"を指定する。-->
-        <form action="{{action('UserController@create')}}" method="post" required>
+        <form id="form_tags" action="{{ action('UserController@create') }}"  method="post" required>
         @csrf
             <div class="form_tag">
                 <label>ニックネーム</label>

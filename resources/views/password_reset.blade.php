@@ -32,13 +32,23 @@
             font-size: 25px;
             font-weight: bolder;
         }
+        #form_tags {
+            height: 70%;
+        }
         .form_tag {
+            /*
             width: 50%;
             margin: 0 auto;
-            /*background-color: #00DD00;*/
             position: relative;
             top: 30px;
             margin-bottom: 40px;
+            */
+            width: 50%;
+            height: 30%;
+            margin: 0 auto;
+            /*background-color: #00DD00;*/
+            position: relative;
+            top: 10%;
         }
         .error_notice {
             color: red;
@@ -53,7 +63,8 @@
         #notice {
             color: #696969;
             font-size: 12px;
-            position: absolute;
+            position: relative;
+            top: 8%;
             left: 25%;
             width: 50%;
         }
@@ -82,7 +93,7 @@
 <div class="content">
         <p class="title">パスワードをお忘れの方</p>
         <hr>
-        <form action="{{action('UserController@create')}}" method="post">
+        <form id="form_tags" action="{{action('UserController@create')}}" method="post">
         @csrf
             <div class="form_tag">  
                 <label>メールアドレス</label>

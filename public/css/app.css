@@ -2712,9 +2712,21 @@ fieldset:disabled a.btn {
 }
 
 .btn-secondary {
+  /*
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
+  */
+  /*ここからGoogleログインボタン用に変更*/
+  background: white;
+  color: #444;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: thin solid #888;
+  box-shadow: 1px 1px 1px grey;
+  white-space: nowrap;
 }
 
 .btn-secondary:hover {

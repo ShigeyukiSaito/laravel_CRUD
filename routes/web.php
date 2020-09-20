@@ -25,10 +25,13 @@ Route::get('/signup', function () {
     return view('signup');
 });
 
-Route::post('/user', 'UserController@create');
-Route::get('/user', function (){
-    return view('user');
-});
+//Route::get('/user', 'Auth\LoginController@handleGoogleCallback')->name('user');
+Route::get('/user', 'UserController@show')->name('user');
+//Route::resource('user', 'UserController', ['only' => ['index', 'show']]);
+Route::post('/user', 'UserController@create')->name('userCreate'); 
+
+//ユーザ登録からのユーザページと、ログインからのユーザページで、URIを変えた。
+Route::post('/user/1', 'UserController@show')->name('userLoginAuth'); 
 
 Route::get('/password_reset', function () {
     return view('password_reset');
@@ -40,7 +43,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+//Googleのjavascriptによるログインではない↓
 //Googleへのリダイレクト
 Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
 //Googleから本アプリへ戻ってくる
 Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');
+

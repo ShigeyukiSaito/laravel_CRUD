@@ -3,9 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="250458634432-n9aab776rvsnas9a72o3opser147gafp.apps.googleusercontent.com">
     <title>ログイン</title>
 
-    <style>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <!-- ここからGoogleログインボタンのデザイン-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+
+    <script>
+    let googleUser = {};
+    //let authentificated = true;
+    //window.onload = authentificate_error;
+
+/*
+    //認証エラーメッセージ生成
+    window.onload = function() {
+        let authError = document.getElementById("authError");
+        window.alert("onloadが実行されました。");
+        if( authentificated == false ) {
+            authError.hidden = false;
+        };
+    };
+*/
+    let startApp = function() {
+        gapi.load('auth2', function(){
+        // Retrieve the singleton for the GoogleAuth library and set up the client.
+        auth2 = gapi.auth2.init({
+            client_id: '250458634432-n9aab776rvsnas9a72o3opser147gafp.apps.googleusercontent.com',
+            cookiepolicy: 'single_host_origin',
+            // Request scopes in addition to 'profile' and 'email'
+            //scope: 'additional_scope'
+        });
+        attachSignin(document.getElementById('customBtn'));
+        });
+    };
+
+    function attachSignin(element) {
+        console.log(element.id);
+        auth2.attachClickHandler(element, {},
+            function(googleUser) {
+            document.getElementById('name').innerText = "Signed in: " +
+                googleUser.getBasicProfile().getName();
+                //ユーザページへ移動
+                let UserPageUri = "{{ route('user')}}";
+                document.location.href = UserPageUri;
+            }, function(error) {
+            alert(JSON.stringify(error, undefined, 2));
+            });
+    }
+    </script>
+    <!-- ここまで-->
+    <style type="text/css">
         html, body {
             background-color: #DDDDDD;
             color: #000000;
@@ -25,20 +77,25 @@
             vertical-align: middle;
             height: 80%;
             padding-top:20px;
-            
         }
         .title {
             text-align:center;
             font-size: 25px;
             font-weight: bolder;
         }
+        .content hr {
+            margin-bottom: 50px;
+        }
+        #form_tags {
+            height: 70%;
+        }
         .form_tag {
             width: 50%;
+            height: 22%;
             margin: 0 auto;
             /*background-color: #00DD00;*/
             position: relative;
-            top: 30px;
-            margin-bottom: 40px;
+            top: 0px;
         }
         .form_tag a {
             margin-top: 20px;
@@ -69,7 +126,7 @@
             /*inline要素なので、margin: 0 auto;が使えない（box要素なら使える）*/
             /*なので、divタグやpタグで囲って、そいつにmargin: 0 auto;を当てる */
             position: absolute;
-            bottom: 20%;
+            bottom: 18%;
             height: 40px;
             font-size: 20px;
         }
@@ -78,15 +135,108 @@
             left: 25%;
             bottom: 10%;
         }
-        
+        .g-signin2 {
+            width: 50%;
+            margin: 0 auto;
+            background-color: #00DD00;
+            position: relative;
+            top: 30px;
+            margin-bottom: 40px;
+        }
+        .g-signin2 > div{
+            width: 200%;
+            margin: 0 auto;
+        }
+        /* ここからGoogleボタンの改良デザイン*/
+        #customBtn {
+            /*display: inline-block;*/
+            background: white;
+            color: #444;
+            width: 50%/*190px*/;
+            margin: 0 auto;
+            /*margin-bottom: 20px;*/
+            border-radius: 5px;
+            border: thin solid #888;
+            box-shadow: 1px 1px 1px grey;
+            white-space: nowrap;
+        }
+        #customBtn:hover {
+            cursor: pointer;
+        }
+        span.label {
+            font-family: serif;
+            font-weight: normal;
+        }
+        span.icon {
+            background: url('https://www.google.co.jp/favicon.ico') transparent 5px 50% no-repeat;
+            /*background: url('/identity/sign-in/g-normal.png') transparent 5px 50% no-repeat;*/
+            /*background: url('/storage/app/public/btn_google_light_normal_ios.svg') transparent 5px 50% no-repeat;*/
+            display: inline-block;/*これ付けないとアイコン出なくなる。*/
+            vertical-align: middle;
+            width: 42px;
+            height: 42px;
+        }
+        span.buttonText {
+            display: inline-block;
+            /*text-align: center;*/
+            vertical-align: middle;
+            padding-left: 42px;
+            padding-right: 42px;
+            font-size: 14px;
+            /*font-weight: bold;*/
+            /* Use the Roboto font that is loaded in the <head> */
+            font-family: 'Roboto', sans-serif;
+        }
+        #logout {
+           position: absolute;
+           right: 0;
+           bottom: 0;
+        }
+        #googleLoginLink{
+            text-decoration: none;
+            color:black;
+        }
+        .authErrorParent {
+            height: 16%;
+        }
+        #authError {
+            color: red;
+            /*display: inline;*/
+            position: relative;
+            top: 40%;
+            vertical-align: middle;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-<div class="content">
+    <div class="content">
         <p class="title">ログイン</p>
         <hr>
-        <form action="{{action('UserController@create')}}" method="post">
+
+        <form id="form_tags" action="{{action('UserController@show')}}" method="post">
         @csrf
+            <!--デフォルトのGoogleログインボタン-->
+            <!--<div class="g-signin2" data-onsuccess="onSignIn"><div>Googleで</div></div>-->
+
+            <!--カスタムログインボタン-->
+            <div id="gSignInWrapper">
+                <!--<span class="label">Sign in with:</span>-->
+                <div id="customBtn" class="customGPlusSignIn" >
+                    <span class="icon"></span>
+                    <span class="buttonText"><!--<a href="/login/google" id="googleLoginLink">-->Googleでログイン</span>
+                </div>
+            </div>
+            <!--<div id="name"></div>-->
+            <script>startApp();</script>
+
+            <!--ここにエラーメッセージ出す-->
+            <div class="authErrorParent">
+            @if (Session::has('authentificated'))
+                <div id="authError">メールアドレスかパスワードが間違っています。</div>
+            @endif
+            </div>
+
             <div class="form_tag">  
     <!--        <label>メールアドレス</label>   -->
                 <input type="text" name="email" class="form_input" placeholder="メールアドレス" /*onmouseleave*/ onblur="check_email(this)"/>
@@ -100,9 +250,18 @@
                 <input type="submit" id="button" value="確認に進む"/>
             </div>
             <div id="password_reset"><a href="/password_reset">パスワードをお忘れの方</a></div>
+            <div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>
         </form>
-
+        
+        
         <script>
+            function onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            }
             //各フォームの正規表現（RegExp）
             const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
             const match_password =/[\w\-._]{7,30}/; 
@@ -120,6 +279,7 @@
             const null_error_message = "入力してください。";
             const email_error_message = "フォーマットが正しくありません。";
             const password_error_message = "7文字以上30文字以下の半角英数字で入力してください";
+            const authentification_error_message = "メールアドレスかパスワードが間違っています。";
 
             function check_email(obj) {
                 //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9
@@ -209,6 +369,12 @@
                 let errorMessage = document.getElementById(id);
                 //中身変える
                 errorMessage.innerHTML = message;
+            }
+            function signOut() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                console.log('User signed out.');
+                });
             }
         </script>
     </div>

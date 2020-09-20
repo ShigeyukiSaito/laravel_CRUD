@@ -1,6 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<style type="text/css">
+    span.icon {
+        background: url('https://www.google.co.jp/favicon.ico') transparent 5px 50% no-repeat;
+        /*background: url('/identity/sign-in/g-normal.png') transparent 5px 50% no-repeat;*/
+        /*background: url('/storage/app/public/btn_google_light_normal_ios.svg') transparent 5px 50% no-repeat;*/
+        display: inline-block;/*これ付けないとアイコン出なくなる。*/
+        vertical-align: middle;
+        width: 42px;
+        height: 35px;
+        position: relative;
+        right: 20%;
+    }
+    span.btnText {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+</style>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -64,15 +82,16 @@
                                 @endif
                             </div>
                         </div>
-                    </form>
-                    <!-- Googleログインボタン-->
-                    <div class="form-group row mt-2">
-                        <div class="col-md-8 offset-md-4">
-                            <a href="/login/google" class="btn btn-secondary" role="button">
-                                Google Login
-                            </a>
+                        <!-- Googleログインボタン-->
+                        <div class="form-group row mt-2">
+                            <div class="col-md-6 offset-md-4">
+                                <a href="/login/google" class="btn btn-secondary" role="button">
+                                    <span class="icon"></span>
+                                    <span class="btnText">Googleでログイン</span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

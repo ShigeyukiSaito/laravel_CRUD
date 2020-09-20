@@ -62,6 +62,9 @@ class LoginController extends Controller
         // ログイン処理
         \Auth::login($user, true);
         return redirect('/home');
+
+        //以下のコードでは、ただビューを表示するのみなので、リロードしたら/homeに遷移する
+        //return view('user', compact('user'));
     }
 
     public function createUserByGoogle($gUser)
@@ -81,6 +84,6 @@ class LoginController extends Controller
         
         $user->save();
         */
-        return $user;
+        return view('user', compact('user'));
     }
 }
