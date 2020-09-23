@@ -61,7 +61,7 @@ class LoginController extends Controller
         }
         // ログイン処理
         \Auth::login($user, true);
-        return redirect('/home');
+        return redirect('home');
 
         //以下のコードでは、ただビューを表示するのみなので、リロードしたら/homeに遷移する
         //return view('user', compact('user'));

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-signin-client_id" content="250458634432-n9aab776rvsnas9a72o3opser147gafp.apps.googleusercontent.com">
+    
+    <meta id="csrf-token" content="{{ csrf_token() }}">
+
     <title>ログイン</title>
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -46,11 +49,40 @@
         console.log(element.id);
         auth2.attachClickHandler(element, {},
             function(googleUser) {
+                let XHR = new XMLHttpRequest();
+                let token = document.getElementById('csrf-token').getAttribute('content');
+
+                //リクエストのセットアップ
+                XHR.open("POST", "http://localhost:8000/user/1");
+                
+                // POST 送信の場合は Content-Type は固定.
+                XHR.setRequestHeader( 'Content-Type', 'application/json' );
+                XHR.setRequestHeader('X-CSRF-TOKEN', token);
+                XHR.responseType = 'json';
+
+                //ユーザ情報の取得
+                let data = {"nickname": nickname, "email": email, "":}
+                let nickname = googleUser.getBasicProfile().getName();
+                let email = googleUser.getBasicProfile().getEmail();
+                let password = googleUser.getBasicProfile().getPassword();
+
+                //データ送信
+                XHR.send(JSON.stringify(data));
+                /*以下の方法だと、getメソッドでURIにパラメータ渡すだけになる。
+                //ユーザ情報の取得
+                let nickname = googleUser.getBasicProfile().getName();
+                let email = googleUser.getBasicProfile().getEmail();
+
+                let post_profile="nickname="+nickname+"&email="+email;
+                */
+                //ユーザページへ移動
+                let UserPageUri = "{{ route('userLoginAuth') }}";
+                document.location.href = UserPageUri;
+                
+            /*
             document.getElementById('name').innerText = "Signed in: " +
                 googleUser.getBasicProfile().getName();
-                //ユーザページへ移動
-                let UserPageUri = "{{ route('user')}}";
-                document.location.href = UserPageUri;
+                */
             }, function(error) {
             alert(JSON.stringify(error, undefined, 2));
             });
@@ -88,6 +120,8 @@
         }
         #form_tags {
             height: 70%;
+            position: relative;
+            top: 0px;
         }
         .form_tag {
             width: 50%;
@@ -229,7 +263,7 @@
             </div>
             <!--<div id="name"></div>-->
             <script>startApp();</script>
-
+            
             <!--ここにエラーメッセージ出す-->
             <div class="authErrorParent">
             @if (Session::has('authentificated'))
