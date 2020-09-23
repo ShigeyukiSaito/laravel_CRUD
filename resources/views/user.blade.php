@@ -26,6 +26,15 @@
             margin-top: 20px;
             font-size: 30px;
         }
+        header a {
+            color: dimgray;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0 25px;
+            position: absolute;
+            right: 10%;
+            top: 5%;
+        }
         main {
             background-color: #FFFFFF;
             width: 80%;
@@ -54,6 +63,7 @@
 <body>
     <header>
         <label>{{$user->nickname}}のページ</label>
+        <a href="/">ログアウト</a>
     </header>
     
     <main>

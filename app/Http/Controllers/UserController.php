@@ -29,16 +29,29 @@ class UserController extends Controller
         */
 
         //DBにあるデータとの照合
-        $credentials = $request->only('nickname', 'email');
+        $credentials = $request->only('nickname', 'email', 'password');
         /*$request->nickname*/
-
-        if (Auth::attempt(['nickname' => $request->nickname])) {
+        /*
+        if (Auth::attempt(['nickname' => $request->nickname , 'password' => $request->password])) {
             //このニックネームはすでに使用されています。
             return redirect('/signup');//->with('authentificated', false);
         }
-        else if (Auth::attempt(['email' => $request->email])) {
+        else if (Auth::attempt(['email' => $request->email , 'password' => $request->password])) {
             //このメールアドレスはすでに使用されています。
             return redirect('/signup');//->with('authentificated', false);
+        }
+        */
+        $user_check_byNickname = User::where('nickname', $request->nickname)->first();//DB::table('users')->where('nickname', $request->nickname)->first()でも良い;
+        $user_check_byEmail = User::where('email', $request->email)->first();
+        
+        if($user_check_byNickname != null && $user_check_byNickname != null) {
+            return back()->with(array('error_message' => "そのニックネームとメールアドレスはすでに使用されています。", 'authentificated' => false));
+        }
+        else if($user_check_byNickname != null) {
+            return back()->with(array('error_message' => "そのニックネームはすでに使用されています。", 'authentificated' => false));
+        }
+        else if($user_check_byEmail != null) {
+            return back()->with(array('error_message' => "そのメールアドレスはすでに使用されています。", 'authentificated' => false));
         }
         else {
             //モデルを用いたDB追加

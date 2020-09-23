@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/signin', function () {
-    return view('login');
+    return view('login');//React UI のAuthとかぶらないように、uri名変えた
 });
 
 Route::get('/signup', function () {
@@ -31,7 +31,11 @@ Route::get('/user', 'UserController@show')->name('user');
 Route::post('/user', 'UserController@create')->name('userCreate'); 
 
 //ユーザ登録からのユーザページと、ログインからのユーザページで、URIを変えた。
+/*
+Route::get('/user/1', 'Auth\LoginController@handleGoogleCallback')->name('GoogleLoginAuth'); 
 Route::post('/user/1', 'UserController@show')->name('userLoginAuth'); 
+*/
+//Route::match(['get', 'post'], '/user/1', 'UserController@show')->name('userLoginAuth');
 
 Route::get('/password_reset', function () {
     return view('password_reset');
@@ -48,4 +52,3 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('login/google', 'Auth\LoginController@redirectToGoogle');
 //Googleから本アプリへ戻ってくる
 Route::get('login/google/callback', 'Auth\LoginController@handleGoogleCallback');
-

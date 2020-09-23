@@ -3,9 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="250458634432-n9aab776rvsnas9a72o3opser147gafp.apps.googleusercontent.com">
     <title>新規ユーザ登録</title>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <!-- ここからGoogleログインボタンのデザイン-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
+    <script>
+    let googleUser = {};
+    //let authentificated = true;
+    //window.onload = authentificate_error;
+
+/*
+    //認証エラーメッセージ生成
+    window.onload = function() {
+        let authError = document.getElementById("authError");
+        window.alert("onloadが実行されました。");
+        if( authentificated == false ) {
+            authError.hidden = false;
+        };
+    };
+*/
+    let startApp = function() {
+        gapi.load('auth2', function(){
+        // Retrieve the singleton for the GoogleAuth library and set up the client.
+        auth2 = gapi.auth2.init({
+            client_id: '250458634432-n9aab776rvsnas9a72o3opser147gafp.apps.googleusercontent.com',
+            cookiepolicy: 'single_host_origin',
+            // Request scopes in addition to 'profile' and 'email'
+            //scope: 'additional_scope'
+        });
+        attachSignin(document.getElementById('customBtn'));
+        });
+    };
+
+    function attachSignin(element) {
+        console.log(element.id);
+        auth2.attachClickHandler(element, {},
+            function(googleUser) {
+                //ユーザページへ移動
+                let UserPageUri = "{{ route('userCreate') }}"; 
+                document.location.href = UserPageUri;
+            });
+    }
+    </script>
+
     <style>
-    
         html, body {
             background-color: #DDDDDD;
             color: #000000;
@@ -17,14 +63,14 @@
         .content {
             background-color: #FFFFFF;
             width: 40%;
-            height: 80%;
+            height: 90%;
             margin: 0 auto;
             font-size: 15px;
             position: relative;
             top: 10%;
             text-align: left;
-            vertical-align: middle;
-            padding-top:20px;
+            /*vertical-align: middle;*/
+            padding-top:10px;
             
         }
         .title {
@@ -33,15 +79,17 @@
             font-weight: bolder;
         }
         #form_tags {
-            height: 70%;
+            height: 80%;
+            position: relative;
+            top: 5%;
         }
         .form_tag {
             width: 50%;
-            height: 26%;
+            height: 21%;
             margin: 0 auto;
             /*background-color: #00DD00;*/
             position: relative;
-            top: 60px;
+            top: 5%;
             /*margin-bottom: 25px;*/
         }
         input.form_input {
@@ -73,7 +121,57 @@
             height: 40px;
             font-size: 20px;
         }
-        
+        /* ここからGoogleボタンの改良デザイン*/
+        #customBtn {
+            /*display: inline-block;*/
+            background: white;
+            color: #444;
+            width: 50%/*190px*/;
+            margin: 0 auto;
+            /*margin-bottom: 20px;*/
+            border-radius: 5px;
+            border: thin solid #888;
+            box-shadow: 1px 1px 1px grey;
+            white-space: nowrap;
+        }
+        #customBtn:hover {
+            cursor: pointer;
+        }
+        span.label {
+            font-family: serif;
+            font-weight: normal;
+        }
+        span.icon {
+            background: url('https://www.google.co.jp/favicon.ico') transparent 5px 50% no-repeat;
+            /*background: url('/identity/sign-in/g-normal.png') transparent 5px 50% no-repeat;*/
+            /*background: url('/storage/app/public/btn_google_light_normal_ios.svg') transparent 5px 50% no-repeat;*/
+            display: inline-block;/*これ付けないとアイコン出なくなる。*/
+            vertical-align: middle;
+            width: 42px;
+            height: 42px;
+        }
+        span.buttonText {
+            display: inline-block;
+            /*text-align: center;*/
+            vertical-align: middle;
+            padding-left: 42px;
+            padding-right: 42px;
+            font-size: 14px;
+            /*font-weight: bold;*/
+            /* Use the Roboto font that is loaded in the <head> */
+            font-family: 'Roboto', sans-serif;
+        }
+        .authErrorParent {
+            height: 30px;
+        }
+        #authError {
+            color: red;
+            /*display: inline;*/
+            position: relative;
+            top: 20px;
+            /*vertical-align: middle;*/
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +181,24 @@
         <!-- フォームの自動補完機能をoffにするには、フォームまたは各inputタグの属性にautocomplete="off"を指定する。-->
         <form id="form_tags" action="{{ action('UserController@create') }}"  method="post" required>
         @csrf
+            <!--カスタムログインボタン-->
+            <div id="gSignInWrapper">
+                <!--<span class="label">Sign in with:</span>-->
+                <div id="customBtn" class="customGPlusSignIn" >
+                    <span class="icon"></span>
+                    <span class="buttonText"><!--<a href="/login/google" id="googleLoginLink">-->Googleで新規登録</span>
+                </div>
+            </div>
+            <div id="name"></div>
+            <script>startApp();</script>
+
+            <!--ここにエラーメッセージ出す-->
+            <div class="authErrorParent">
+            @if (Session::has('authentificated'))
+                <div id="authError">{{ session('error_message') }}</div>
+            @endif
+            </div>
+
             <div class="form_tag">
                 <label>ニックネーム</label>
                 <input type="text" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
@@ -99,6 +215,7 @@
                 <input type="submit" id="button" value="確認に進む"/>
             </div>
         </form>
+        
 
         <script>
             //各フォームの正規表現（RegExp）
@@ -214,4 +331,4 @@
         </script>
     </div>
 </body>
-</html>
+</htm

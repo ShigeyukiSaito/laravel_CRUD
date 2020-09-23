@@ -70,10 +70,12 @@
                     @auth
                         <a href="{{ url('/home') }}">Home</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+                        <!--<a href="{{ route('login') }}">Login</a>-->
+                        <a href="{{ url('/signin') }}">Login</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                            <!--<a href="{{ route('register') }}">Register</a>-->
+                            <a href="{{ url('/signup') }}">Register</a>
                         @endif
                     @endauth
                 </div>
@@ -83,7 +85,6 @@
                 <div class="title m-b-md">
                     Barter
                 </div>
-            <!--
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
@@ -94,13 +95,14 @@
                     <a href="https://vapor.laravel.com">Vapor</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                     <br>
-            -->
+            <!--
                     <form action="" method="post">
                     @csrf
                     <p>名前: <input type="text" name="name" /></p>
                     <p>年齢: <input type="text" name="age" /></p>
                          <input type="submit" />
                     </form>
+            -->
                 </div>
             </div>
         </div>
