@@ -62,7 +62,7 @@ class UserController extends Controller
             //パスワード暗号化しないと、ログインvalidationされない（通過してまう）
             //$user->password = $request->password;
             $user->password = Hash::make($request->password);
-
+            //$user->user_id = $request->user()->id(); //この書き方謎
             $user->save();
             return view('user', compact('user'));
     /*

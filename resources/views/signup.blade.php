@@ -44,9 +44,11 @@
         console.log(element.id);
         auth2.attachClickHandler(element, {},
             function(googleUser) {
-                //ユーザページへ移動
-                let UserPageUri = "{{ route('userCreate') }}"; 
-                document.location.href = UserPageUri;
+                //Googleログインボタンを隠す
+                element.hidden = true;
+                //フォームにgoogleアカウントのデータを入力
+                document.getElementById('user_nickname').value = googleUser.getBasicProfile().getName();
+                document.getElementById('user_email').value = googleUser.getBasicProfile().getEmail();
             });
     }
     </script>
@@ -108,17 +110,18 @@
             font-size: 12px;
         }
         .button_tag{
-            background-color: #00DD00;
             width: 50%;
+            height: 9%;
             margin: 0 auto;
+            position: relative;
+            top: 7%;
         }
         input#button{
-            width: 50%;
+            width: 100%;
+            height: 100%;
             /*inline要素なので、margin: 0 auto;が使えない（box要素なら使える）*/
             /*なので、divタグやpタグで囲って、そいつにmargin: 0 auto;を当てる */
-            position: absolute;
-            bottom: 8%;
-            height: 40px;
+            position: relative;
             font-size: 20px;
         }
         /* ここからGoogleボタンの改良デザイン*/
@@ -201,15 +204,15 @@
 
             <div class="form_tag">
                 <label>ニックネーム</label>
-                <input type="text" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
+                <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
             </div>
             <div class="form_tag">
                 <label>メールアドレス</label>
-                <input type="text" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  /*onmouseleave*/ onblur="check_email(this)" required/>
+                <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  /*onmouseleave*/ onblur="check_email(this)" required/>
             </div>
             <div class="form_tag">
                 <label>パスワード</label>
-                <input type="text" name="password" class="form_input" placeholder="7文字以上の半角英数字" /*onmouseleave*/ onblur="check_password(this)" required/>
+                <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" /*onmouseleave*/ onblur="check_password(this)" required/>
             </div>
             <div class="button_tag">
                 <input type="submit" id="button" value="確認に進む"/>
