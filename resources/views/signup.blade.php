@@ -63,7 +63,7 @@
         .content {
             background-color: #FFFFFF;
             width: 40%;
-            height: 90%;
+            height: 86%;
             margin: 0 auto;
             font-size: 15px;
             position: relative;
@@ -234,7 +234,7 @@
             //エラーメッセージの内容
             const null_error_message = "入力してください。";
             const email_error_message = "フォーマットが正しくありません。";
-            const password_error_message = "7文字以上30文字以下の半角英数字で入力してください";
+            const password_error_message = "7文字以上30文字以下の半角英数字で入力して下さい";
 
             function check_nickname(obj) {
                 
