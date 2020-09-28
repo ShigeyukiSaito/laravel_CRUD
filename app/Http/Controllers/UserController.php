@@ -102,8 +102,51 @@ class UserController extends Controller
         //\Auth::login($user, true);
     }
 
+    public function GoogleLogin(Request $request) {
+        return view('welcome');
+        $user = $request->all();
+        $nickname = $request->input('data.nickname');
+        $email = $request->input('data.email');
+        $password = $request->input('data.password');
+        
+        $user_check_byNickname = User::where('nickname', $nickname)->first();//DB::table('users')->where('nickname', $request->nickname)->first()でも良い;
+        $user_check_byEmail = User::where('email', $email)->first();
+
+        if($user_check_byNickname != null && $user_check_byNickname != null) {
+            // 認証に成功した
+            $user = Auth::user();
+            return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
+        } else {
+            return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
+        }
+    }
+
+    public function Logout() {
+        Auth::logout();
+        return view('welcome');
+    }
+
     //これ、別のコントローラに写した方がよくね？
     public function password_reset() {
         return view('password_reset');
     }
+    /*
+        $nickname = $request->input('data.nickname');
+        $email = $request->input('data.email');
+        $password = $request->input('data.password');
+        */
+        /*
+        //Googleログインの場合。パスワードが存在しない
+        if($nickname == null) {
+            $user_check_byNickname = User::where('nickname', $nickname)->first();//DB::table('users')->where('nickname', $request->nickname)->first()でも良い;
+            $user_check_byEmail = User::where('email', $email)->first();
+
+            if($user_check_byNickname != null && $user_check_byNickname != null) {
+                // 認証に成功した
+                $user = Auth::user();
+                return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
+            } else {
+                return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
+            }
+        */
 }

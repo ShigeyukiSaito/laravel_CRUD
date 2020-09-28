@@ -204,18 +204,18 @@
 
             <div class="form_tag">
                 <label>ニックネーム</label>
-                <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" /*onmouseleave*/ onblur="check_nickname(this)" required>
+                <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" onmouseleave="check_nickname(this)" /*onblur="check_nickname(this)"*/ required>
             </div>
             <div class="form_tag">
                 <label>メールアドレス</label>
-                <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  /*onmouseleave*/ onblur="check_email(this)" required/>
+                <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  onmouseleave="check_email(this)" /*onblur="check_email(this)"*/ required/>
             </div>
             <div class="form_tag">
                 <label>パスワード</label>
-                <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" /*onmouseleave*/ onblur="check_password(this)" required/>
+                <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" onmouseleave="check_password(this)" /*onblur="check_password(this)"*/ required/>
             </div>
             <div class="button_tag">
-                <input type="submit" id="button" value="確認に進む"/>
+                <input type="submit" id="button" value="確認に進む" disabled/>
             </div>
         </form>
         
@@ -234,11 +234,20 @@
             const email_error_id = "error_email";
             const password_error_id = "error_password";
 
+            const button = document.getElementById('button');
+
             //エラーメッセージの内容
             const null_error_message = "入力してください。";
             const email_error_message = "フォーマットが正しくありません。";
             const password_error_message = "7文字以上30文字以下の半角英数字で入力して下さい";
 
+            function inputable_check() {
+                if(nickname_error_message_created == true || email_error_message_created == true || password_error_message_created == true) {
+                    button.disabled = true;
+                } else {
+                    button.disabled = false;
+                }
+            }
             function check_nickname(obj) {
                 
             }
@@ -278,6 +287,7 @@
                         }
                     }
                 }
+                inputable_check();
             }
             function check_password(obj) {
                 let result = obj.value.match(match_password /*/[\w\-._]{7,30}/*/);
@@ -313,6 +323,7 @@
                         }
                     }
                 }
+                inputable_check();
             }
             //エラーメッセージ生成
             function make_error_message(obj, id, message) {

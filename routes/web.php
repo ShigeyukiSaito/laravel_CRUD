@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'UserController@Logout');
 
 Route::get('/signin', function () {
     return view('login');//React UI のAuthとかぶらないように、uri名変えた
@@ -31,11 +30,19 @@ Route::get('/user', 'UserController@show')->name('user');
 Route::post('/user', 'UserController@create')->name('userCreate'); 
 
 //ユーザ登録からのユーザページと、ログインからのユーザページで、URIを変えた。
-/*
-Route::get('/user/1', 'Auth\LoginController@handleGoogleCallback')->name('GoogleLoginAuth'); 
+Route::get('/user/home', function() {
+    return view('user');
+});
+Route::post('/user/home', 'UserController@GoogleLogin')->name('googleLoginAuth'); 
+//Route::match(['get', 'post'], '/user/home', 'UserController@show')->name('userLoginAuth');
+
+Route::get('/user/1', function() {
+    return view('user');
+});
 Route::post('/user/1', 'UserController@show')->name('userLoginAuth'); 
-*/
-//Route::match(['get', 'post'], '/user/1', 'UserController@show')->name('userLoginAuth');
+//Route::match(['get', 'post'], '/user/1', 'UserController@GoogleLogin');
+
+
 
 Route::get('/password_reset', function () {
     return view('password_reset');
