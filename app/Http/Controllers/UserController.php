@@ -103,18 +103,29 @@ class UserController extends Controller
     }
 
     public function GoogleLogin(Request $request) {
-        return view('welcome');
+        /*JSONリクエストを受ける
         $user = $request->all();
         $nickname = $request->input('data.nickname');
         $email = $request->input('data.email');
-        $password = $request->input('data.password');
-        
-        $user_check_byNickname = User::where('nickname', $nickname)->first();//DB::table('users')->where('nickname', $request->nickname)->first()でも良い;
-        $user_check_byEmail = User::where('email', $email)->first();
+        //$password = $request->input('data.password');
+        */
+        $nickname = $request->nickname;
+        $email = $request->email;
+        //return $nickname; //これだとGoogleアカウントの名前が出る。
 
-        if($user_check_byNickname != null && $user_check_byNickname != null) {
+        //$user_check_byNickname = User::where('nickname', $nickname)->first();//DB::table('users')->where('nickname', $request->nickname)->first()でも良い;
+        $user = User::where('email', $email)->first();
+        //$user = array("nickname" => $nickname, "email" => $email);
+        //return $user["nickname"];// これだと文字化けする
+        /*
+        return response()->json([
+            'error_message' => 'Googleでの登録情報はありません。他の方法でログインをお試しください。',
+            'authentificated' => false
+        ]);
+        */
+        if($user != null) {
             // 認証に成功した
-            $user = Auth::user();
+            //$user = Auth::user(); //上のif文でAuth::attempts使ってないのにいきなりここで使えんのか？
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         } else {
             return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));

@@ -22,16 +22,17 @@
     //let authentificated = true;
     //window.onload = authentificate_error;
 
-/*
+    /*
     //認証エラーメッセージ生成
     window.onload = function() {
         let authError = document.getElementById("authError");
         window.alert("onloadが実行されました。");
+        
         if( authentificated == false ) {
             authError.hidden = false;
         };
-    };
-*/
+    }; */
+
     let startApp = function() {
         gapi.load('auth2', function(){
         // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -49,14 +50,17 @@
         console.log(element.id);
         auth2.attachClickHandler(element, {},
             function(googleUser) {
-                
+                /*
                 //POST通信
                 //500エラーの原因、csrfトークン関連だと思う。コントローラ側にトークン行ってない？
                 let XHR = new XMLHttpRequest();
                 let token = document.getElementsByName("csrf-token").item(0).content;
                 console.log(token);
-
-                let UserPageUri = "{{ route('googleLoginAuth') }}";
+*/
+                //let token = document.getElementsByName("csrf-token").item(0).content;
+                //let UserPageUri = "{{ route('userLoginAuth') }}";
+                
+                /*
                 //リクエストのセットアップ
                 XHR.open("POST", UserPageUri);
                 
@@ -64,15 +68,36 @@
                 XHR.setRequestHeader( 'Content-Type', 'application/json' );
                 XHR.setRequestHeader('X-CSRF-TOKEN', token);
                 //XHR.responseType = 'json';
-
+*/
                 //ユーザ情報の取得
                 let nickname = googleUser.getBasicProfile().getName();
                 let email = googleUser.getBasicProfile().getEmail();
-                let data = JSON.stringify({"nickname": nickname, "email": email});
-
+                //let data = JSON.stringify({"nickname": nickname, "email": email});
+/*
                 //データ送信
                 console.log(data);
                 XHR.send(data);
+                */
+                let f = document.getElementById("googleForm");
+                let input_nickname = document.getElementById('googleNickname');
+                let input_email = document.getElementById('googleEmail');
+
+                input_nickname.value = nickname;
+                input_email.value = email;
+
+                //submit()で情報送信
+                f.submit();
+/*
+                // データが正常に送信された場合に行うことを定義します
+                XHR.addEventListener('load', function(event) {
+                    alert('Yeah! Data sent and response loaded.');
+                });
+
+                // エラーが発生した場合に行うことを定義します
+                XHR.addEventListener('error', function(event) {
+                    alert('Oups! Something goes wrong.');
+                });
+*/
                 /*
                 //ajaxでやってみる
                 let UserPageUri = "{{ route('userLoginAuth')}}";
@@ -311,6 +336,13 @@
             </div>
             <div id="password_reset"><a href="/password_reset">パスワードをお忘れの方</a></div>
             <div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>
+        </form>
+
+        <!--Googleログインする用のフォーム-->
+        <form id="googleForm" action="{{ action('UserController@GoogleLogin') }}" method="post" hidden>
+        @csrf
+            <input type="text" id="googleNickname" name="nickname" value=""/>
+            <input type="text" id="googleEmail" name="email" value=""/>
         </form>
         
         
