@@ -15,23 +15,9 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <script src="https://apis.google.com/js/api:client.js"></script>
 
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-
     <script>
     let googleUser = {};
     //let authentificated = true;
-    //window.onload = authentificate_error;
-
-    /*
-    //認証エラーメッセージ生成
-    window.onload = function() {
-        let authError = document.getElementById("authError");
-        window.alert("onloadが実行されました。");
-        
-        if( authentificated == false ) {
-            authError.hidden = false;
-        };
-    }; */
 
     let startApp = function() {
         gapi.load('auth2', function(){
@@ -50,17 +36,30 @@
         console.log(element.id);
         auth2.attachClickHandler(element, {},
             function(googleUser) {
-                /*
-                //POST通信
+                //ユーザ認証のためのデータ送信（フォームPOST）
+                let f = document.getElementById("googleForm");
+                let input_nickname = document.getElementById('googleNickname');
+                let input_email = document.getElementById('googleEmail');
+
+                //ユーザ情報の取得   
+                let nickname = googleUser.getBasicProfile().getName();
+                let email = googleUser.getBasicProfile().getEmail();
+                
+                input_nickname.value = nickname;
+                input_email.value = email;
+
+                //submit()で情報送信
+                f.submit();
+
+            /*以下では、JavascriptでXMLHTTPRequest POST通信を行おうとしたが、
+            //コントローラからデータが返ってこず、ページ更新も行われなかったので一旦却下した。
+                
                 //500エラーの原因、csrfトークン関連だと思う。コントローラ側にトークン行ってない？
                 let XHR = new XMLHttpRequest();
                 let token = document.getElementsByName("csrf-token").item(0).content;
                 console.log(token);
-*/
-                //let token = document.getElementsByName("csrf-token").item(0).content;
-                //let UserPageUri = "{{ route('userLoginAuth') }}";
+                let UserPageUri = "{{ route('userLoginAuth') }}";
                 
-                /*
                 //リクエストのセットアップ
                 XHR.open("POST", UserPageUri);
                 
@@ -68,26 +67,16 @@
                 XHR.setRequestHeader( 'Content-Type', 'application/json' );
                 XHR.setRequestHeader('X-CSRF-TOKEN', token);
                 //XHR.responseType = 'json';
-*/
+
                 //ユーザ情報の取得
                 let nickname = googleUser.getBasicProfile().getName();
                 let email = googleUser.getBasicProfile().getEmail();
                 //let data = JSON.stringify({"nickname": nickname, "email": email});
-/*
+
                 //データ送信
                 console.log(data);
                 XHR.send(data);
-                */
-                let f = document.getElementById("googleForm");
-                let input_nickname = document.getElementById('googleNickname');
-                let input_email = document.getElementById('googleEmail');
 
-                input_nickname.value = nickname;
-                input_email.value = email;
-
-                //submit()で情報送信
-                f.submit();
-/*
                 // データが正常に送信された場合に行うことを定義します
                 XHR.addEventListener('load', function(event) {
                     alert('Yeah! Data sent and response loaded.');
@@ -97,9 +86,9 @@
                 XHR.addEventListener('error', function(event) {
                     alert('Oups! Something goes wrong.');
                 });
-*/
-                /*
-                //ajaxでやってみる
+            */
+            /*
+            //ajaxでやってみる
                 let UserPageUri = "{{ route('userLoginAuth')}}";
                 $.ajax({
                     headers: {
@@ -124,22 +113,18 @@
                 let email = googleUser.getBasicProfile().getEmail();
 
                 let post_profile="nickname="+nickname+"&email="+email;
-                */
             
                 //ユーザページへ移動
-                //location.reload(true);
-                
                 //document.location.href = "{{ route('googleLoginAuth') }}";
-        /*
-            document.getElementById('name').innerText = "Signed in: " + JSON.stringify(data);
-                //googleUser.getBasicProfile().getName();
-                */
+                //元からあった処理。サインインしたユーザを表示する
+                //document.getElementById('name').innerText = "Signed in: " + googleUser.getBasicProfile().getName();
+            */
             }, function(error) {
             alert(JSON.stringify(error, undefined, 2));
             });
     }
     </script>
-    <!-- ここまで-->
+
     <style type="text/css">
         html, body {
             background-color: #DDDDDD;
@@ -303,32 +288,31 @@
         @csrf
             <!--デフォルトのGoogleログインボタン-->
             <!--<div class="g-signin2" data-onsuccess="onSignIn"><div>Googleで</div></div>-->
-
             <!--カスタムログインボタン-->
             <div id="gSignInWrapper">
-                <!--<span class="label">Sign in with:</span>-->
                 <div id="customBtn" class="customGPlusSignIn" >
                     <span class="icon"></span>
                     <span class="buttonText"><!--<a href="/login/google" id="googleLoginLink">-->Googleでログイン</span>
                 </div>
             </div>
-            <div id="name"></div>
+            <!--サインインしたユーザ名表示-->
+            <!--<div id="name"></div>-->
             <script>startApp();</script>
             
             <!--ここにエラーメッセージ出す-->
             <div class="authErrorParent">
             @if (Session::has('authentificated'))
-                <div id="authError">メールアドレスかパスワードが間違っています。</div>
+                <div id="authError">{{ session('error_message') }}</div>
             @endif
             </div>
 
             <div class="form_tag">  
     <!--        <label>メールアドレス</label>   -->
-                <input type="text" name="email" class="form_input" placeholder="メールアドレス" onmouseleave="check_email(this)" /*onblur="check_email(this)"*/ />
+                <input type="text" name="email" class="form_input" placeholder="メールアドレス" onblur="check_email(this)" /*onmouseleave="check_email(this)"*/ />
             </div>
             <div class="form_tag">
     <!--        <label>パスワード</label>   -->
-                <input type="text" name="password" class="form_input" placeholder="パスワード" onmouseleave="check_password(this)" /*onblur="check_password(this)"*/ />
+                <input type="text" name="password" class="form_input" placeholder="パスワード" onblur="check_password(this)" /*onmouseleave="check_password(this)"*/ />
     <!--        <a href="/password_reset">パスワードをお忘れの方</a>  -->
             </div>
             <div class="button_tag">
@@ -347,6 +331,7 @@
         
         
         <script>
+            /* Googleの標準サインインボタン用関数
             function onSignIn(googleUser) {
                 var profile = googleUser.getBasicProfile();
                 console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
@@ -354,6 +339,7 @@
                 console.log('Image URL: ' + profile.getImageUrl());
                 console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
             }
+            */
             //各フォームの正規表現（RegExp）
             const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
             const match_password =/[\w\-._]{7,30}/; 
@@ -366,6 +352,7 @@
             //エラーメッセージのタグid
             const email_error_id = "error_email";
             const password_error_id = "error_password";
+            //送信ボタン
             const button = document.getElementById('button');
 
             //エラーメッセージの内容
@@ -374,6 +361,7 @@
             const password_error_message = "7文字以上30文字以下の半角英数字で入力してください";
             const authentification_error_message = "メールアドレスかパスワードが間違っています。";
 
+            //入力エラーでてないかチェック。エラーなければ送信ボタン押せる。
             function inputable_check() {
                 if(email_error_message_created == true || password_error_message_created == true) {
                     button.disabled = true;
@@ -423,9 +411,8 @@
                 let result = obj.value.match(match_password);
 
                 if(result != null) {
-                    //https://developer.mozilla.org/ja/docs/Web/API/Document/getElementsByTagName
                     const errorMessage = document.getElementById(password_error_id);
-                    //エラーメッセージの削除メソッドについてはMozillaのサイトを参考https://developer.mozilla.org/ja/docs/Web/API/Node/removeChild
+            
                     if(errorMessage) {
                         errorMessage.parentNode.removeChild(errorMessage);
                         password_error_message_created = false;
@@ -435,6 +422,7 @@
                     if(password_error_message_created == false) {
                         //div生成チェック
                         password_error_message_created = true;
+
                         switch (obj.value) {
                             case "":
                                 make_error_message(obj, password_error_id, null_error_message);
@@ -453,6 +441,7 @@
                         }
                     }
                 }
+                //入力エラーでてないかチェック
                 inputable_check();
             }
             //エラーメッセージ生成
