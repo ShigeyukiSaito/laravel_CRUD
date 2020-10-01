@@ -15,18 +15,7 @@
     <script>
     let googleUser = {};
     //let authentificated = true;
-    //window.onload = authentificate_error;
-
-/*
-    //認証エラーメッセージ生成
-    window.onload = function() {
-        let authError = document.getElementById("authError");
-        window.alert("onloadが実行されました。");
-        if( authentificated == false ) {
-            authError.hidden = false;
-        };
-    };
-*/
+    
     let startApp = function() {
         gapi.load('auth2', function(){
         // Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -89,10 +78,8 @@
             width: 50%;
             height: 21%;
             margin: 0 auto;
-            /*background-color: #00DD00;*/
             position: relative;
             top: 5%;
-            /*margin-bottom: 25px;*/
         }
         input.form_input {
             width: calc(100% - 22px); /*padding-left つけてなくて-12%なので、paddingつけてたら-22%*/
@@ -186,7 +173,6 @@
         @csrf
             <!--カスタムログインボタン-->
             <div id="gSignInWrapper">
-                <!--<span class="label">Sign in with:</span>-->
                 <div id="customBtn" class="customGPlusSignIn" >
                     <span class="icon"></span>
                     <span class="buttonText"><!--<a href="/login/google" id="googleLoginLink">-->Googleで新規登録</span>
@@ -204,22 +190,21 @@
 
             <div class="form_tag">
                 <label>ニックネーム</label>
-                <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" onmouseleave="check_nickname(this)" /*onblur="check_nickname(this)"*/ required>
+                <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" onblur="check_nickname(this)" autocomplete="off" /*onmouseleave="check_nickname(this)"*/ required>
             </div>
             <div class="form_tag">
                 <label>メールアドレス</label>
-                <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  onmouseleave="check_email(this)" /*onblur="check_email(this)"*/ required/>
+                <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  onblur="check_email(this)" autocomplete="off" /*onmouseleave="check_email(this)"*/ required/>
             </div>
             <div class="form_tag">
                 <label>パスワード</label>
-                <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" onmouseleave="check_password(this)" /*onblur="check_password(this)"*/ required/>
+                <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" onblur="check_password(this)" autocomplete="off" /*onmouseleave="check_password(this)"*/ required/>
             </div>
             <div class="button_tag">
                 <input type="submit" id="button" value="確認に進む" disabled/>
             </div>
         </form>
         
-
         <script>
             //各フォームの正規表現（RegExp）
             const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
@@ -241,6 +226,7 @@
             const email_error_message = "フォーマットが正しくありません。";
             const password_error_message = "7文字以上30文字以下の半角英数字で入力して下さい";
 
+            //入力エラーでてないかチェック。エラーなければ送信ボタン押せる。
             function inputable_check() {
                 if(nickname_error_message_created == true || email_error_message_created == true || password_error_message_created == true) {
                     button.disabled = true;
@@ -293,9 +279,8 @@
                 let result = obj.value.match(match_password /*/[\w\-._]{7,30}/*/);
 
                 if(result != null) {
-                    //https://developer.mozilla.org/ja/docs/Web/API/Document/getElementsByTagName
                     const errorMessage = document.getElementById(password_error_id);
-                    //エラーメッセージの削除メソッドについてはMozillaのサイトを参考https://developer.mozilla.org/ja/docs/Web/API/Node/removeChild
+
                     if(errorMessage) {
                         errorMessage.parentNode.removeChild(errorMessage);
                         password_error_message_created = false;
@@ -305,6 +290,7 @@
                     if(password_error_message_created == false) {
                         //div生成チェック
                         password_error_message_created = true;
+
                         switch (obj.value) {
                             case "":
                                 make_error_message(obj, password_error_id, null_error_message);
@@ -338,11 +324,11 @@
             //エラーメッセージ変更
             function change_error_massage(id, message) {
                 //すでに作ったエラーのdivを拾ってきて
-                let errorMessage = document.getElementById(id/*'error_password'など*/);
+                let errorMessage = document.getElementById(id);
                 //中身変える
                 errorMessage.innerHTML = message;
             }
         </script>
     </div>
 </body>
-</htm
+</html>
