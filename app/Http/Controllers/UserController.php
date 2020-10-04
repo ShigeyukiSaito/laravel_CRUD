@@ -127,12 +127,16 @@ class UserController extends Controller
 
     public function update(Request $request) {
         //return $request;
+        /*
+        $user = Auth::user();
+        return $user;
+        */
         $id = Auth::id();
-        $user = User::find($id);
-
+        $user = User::find($id);//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
         $user->nickname = $request->nickname;
         $user->email = $request->email;
         $user->save();
+        //セッションに保存
         Session::put('user', $user);
         return view('user', compact('user'));
     }
