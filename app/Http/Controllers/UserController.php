@@ -56,6 +56,11 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
             //$user->user_id = $request->user()->id(); //この書き方謎
             $user->save();
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+
+            // ログイン処理
+            \Auth::login($user, true);
             return view('user', compact('user'));
         /*
             //Qiitaのサイト見て（これはrequestがJSON形式の場合？）
@@ -132,7 +137,7 @@ class UserController extends Controller
         return $user;
         */
         $id = Auth::id();
-        $user = User::find($id);//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
+        $user = User::find($id)->first();//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
         $user->nickname = $request->nickname;
         $user->email = $request->email;
         $user->save();
@@ -140,6 +145,16 @@ class UserController extends Controller
         Session::put('user', $user);
         return view('user', compact('user'));
     }
+
+    public function delete() {
+        $id = Auth::id();
+        if($id != null) {
+            $user = User::find($id)->first();
+            Auth::logout();
+            $user->delete();
+        } 
+        return view('unsubscribe'); 
+    } 
 
     //これ、別のコントローラに写した方がよくね？
     public function password_reset() {

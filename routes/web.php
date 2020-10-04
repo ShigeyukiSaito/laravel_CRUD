@@ -42,6 +42,8 @@ Route::get('/user/home/edit', function() {
     return view('edit_profile');
 });
 
+//退会処理
+Route::get('/user/unsubscribe', 'UserController@delete') ;
 
 Route::get('/user/1', function() {
     return view('user');

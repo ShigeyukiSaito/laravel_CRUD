@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ユーザーページ</title>
+    <script>
+        function Unsubscribe() {
+            let check = confirm('本当に退会してもよろしいですか？');
+            if(check  == true) {
+                window.location.href = "/user/unsubscribe";
+            }
+        }
+    </script>
 
     <style>
         html, body {
@@ -75,6 +83,7 @@
             left: 0;
             width: 100%;
             color: #000000;
+            font-size: 20px;
             transform : translateY(-50%); /*ここで上に50%戻す*/
             z-index: auto; /* 必要であればリンク要素の重なりのベース順序指定 */
         }
@@ -116,13 +125,9 @@
             color: red;
             text-decoration: none;
         }
-        /*
-        #content-footer {
-            width: 100%;
-            height: 10%;
-            position: relative;
-            top: 20%;
-        }*/
+        #unsubscribe {
+            color: red;
+        }
         footer {
             height: 10%;
         }
@@ -146,7 +151,7 @@
                 <a href=""><span>設定</span></a>  
             </div>
             <div class="sidebar_tag">
-                <a href=""><span>その他</span></a>  
+                <a href="javascript:Unsubscribe();"><span id="unsubscribe">退会する</span></a>  
             </div>
         </aside>
         <div class="content">

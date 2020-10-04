@@ -319,7 +319,7 @@
                 <input type="submit" id="button" value="確認に進む" disabled/>
             </div>
             <div id="password_reset"><a href="/password_reset">パスワードをお忘れの方</a></div>
-            <div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>
+            <!--<div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>-->
         </form>
 
         <!--Googleログインする用のフォーム-->
