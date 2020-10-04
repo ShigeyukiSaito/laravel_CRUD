@@ -30,11 +30,18 @@ Route::get('/user', 'UserController@show')->name('user');
 Route::post('/user', 'UserController@create')->name('userCreate'); 
 
 //ユーザ登録からのユーザページと、ログインからのユーザページで、URIを変えた。
-Route::get('/user/home', function() {
+/*Route::get('/user/home', function() {
     return view('user');
-});
+});*/
+Route::get('/user/home', 'UserController@show');
 Route::post('/user/home', 'UserController@GoogleLogin')->name('googleLoginAuth'); 
 //Route::match(['get', 'post'], '/user/home', 'UserController@show')->name('userLoginAuth');
+Route::put('/user/home', 'UserController@update');
+
+Route::get('/user/home/edit', function() {
+    return view('edit_profile');
+});
+
 
 Route::get('/user/1', function() {
     return view('user');

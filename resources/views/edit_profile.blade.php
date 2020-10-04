@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ユーザーページ</title>
+    <title>登録情報編集</title>
 
     <style>
         html, body {
@@ -105,16 +105,20 @@
         }
         .profile {
             width: 80%;
-            height: 24px;
             position: relative;
             left: 10%;
             margin-bottom: 3%;
         }
-        .profile > a {
+        .input_form {
+            height: 30px;
+            width: 30%;
+        }
+        #button {
             position: absolute;
-            right: 25%;
+            right: 20%;
+            margin-top: 3%;
             color: red;
-            text-decoration: none;
+            text-decoration: none; 
         }
         /*
         #content-footer {
@@ -122,7 +126,8 @@
             height: 10%;
             position: relative;
             top: 20%;
-        }*/
+        }
+        */
         footer {
             height: 10%;
         }
@@ -153,22 +158,24 @@
             <div id="imageBox">
                 <img id="image" src="https://lh3.googleusercontent.com/ogw/ADGmqu-lOHI3wILYfWgBkiQdJ9IMsRArleodzT0frAYF=s32-c-mo" />
             </div>
-            <div id="profileBox">
-                <div class="profile">
-                    <label>ニックネーム：</label>
-                    <span>{{ Session::get('user.nickname') }}</span>
+            <form id="profileBox" action="/user/home" method="post">
+                @method('PUT')
+                @csrf
+                <div class="profile" hidden>
+                    <input class="input_form" type="text" name="id" class="form_input" value="{{ Session::get('user.id') }}" onblur="check_email(this)" />
                 </div>
                 <div class="profile">
-                    <label>メールアドレス：</label>
-                    <span>{{ Session::get('user.email') }}</span>
+                    <label>新しいニックネーム：</label>
+                    <input class="input_form" type="text" name="nickname" class="form_input" value="{{ Session::get('user.nickname') }}" onblur="check_email(this)" />
                 </div>
                 <div class="profile">
-                    <a href="/user/home/edit">編集する</a>       
+                    <label>新しいメールアドレス：</label>
+                    <input class="input_form" type="text" name="email" class="form_input" value="{{ Session::get('user.email') }}"　onblur="check_email(this)" />
                 </div>
-            </div>
-            <div id="content-footer">
-                
-            </div>
+                <div class="profile">
+                    <input type="submit" id="button" value="更新する" />
+                </div>
+            </form>
         </div>
     <!--
     <p>ニックネーム: {{$nickname ?? ''}}</p>

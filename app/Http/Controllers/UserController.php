@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -79,11 +80,12 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             // 認証に成功した
             $user = Auth::user(); //これわからん
+            // ログイン処理
+            \Auth::login($user, true);
+            
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         }
         return redirect('/signin')->with(array('error_message' => "メールアドレスかパスワードが間違っています。", 'authentificated' => false));
-        // ログイン処理
-        \Auth::login($user, true);
     }
 
     public function GoogleLogin(Request $request) {
@@ -105,6 +107,13 @@ class UserController extends Controller
         if($user != null) {
             // 認証に成功した
             //$user = Auth::user(); //上のif文でAuth::attempts使ってないのにいきなりここで使えんのか？
+
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+
+            // ログイン処理
+            \Auth::login($user, true);
+            
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         } else {
             return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
@@ -114,6 +123,18 @@ class UserController extends Controller
     public function Logout() {
         Auth::logout();
         return view('welcome');
+    }
+
+    public function update(Request $request) {
+        //return $request;
+        $id = Auth::id();
+        $user = User::find($id);
+
+        $user->nickname = $request->nickname;
+        $user->email = $request->email;
+        $user->save();
+        Session::put('user', $user);
+        return view('user', compact('user'));
     }
 
     //これ、別のコントローラに写した方がよくね？
