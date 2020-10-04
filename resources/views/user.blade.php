@@ -90,7 +90,7 @@
             position: relative;
             left: 30%;
             top: 10%;
-            border: 1px solid #000000;
+            /*border: 1px solid #000000;*/
         }
         #image {
             height: 100%;
