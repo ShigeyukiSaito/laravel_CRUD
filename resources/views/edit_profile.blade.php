@@ -84,13 +84,16 @@
             position: relative;
             left: 15%;
         }
+        .content form {
+            width: 100%;
+            height: 100%; 
+        }
         #imageBox {
             width: 40%;
             height: 40%;
             position: relative;
             left: 30%;
             top: 10%;
-            border: 1px solid #000000;
         }
         #image {
             height: 100%;
@@ -98,6 +101,9 @@
             position: absolute;
             top: 0;
             left: 0;
+        }
+        #avatar {
+            display: none;
         }
         #profileBox {
             position: relative;
@@ -120,14 +126,6 @@
             color: red;
             text-decoration: none; 
         }
-        /*
-        #content-footer {
-            width: 100%;
-            height: 10%;
-            position: relative;
-            top: 20%;
-        }
-        */
         footer {
             height: 10%;
         }
@@ -155,25 +153,25 @@
             </div>
         </aside>
         <div class="content">
-            <div id="imageBox">
-                <img id="image" src="https://lh3.googleusercontent.com/ogw/ADGmqu-lOHI3wILYfWgBkiQdJ9IMsRArleodzT0frAYF=s32-c-mo" />
-            </div>
-            <form id="profileBox" action="/user/home" method="post">
+            <form action="/user/home" method="post" enctype="multipart/form-data">
                 @method('PUT')
                 @csrf
-                <div class="profile" hidden>
-                    <input class="input_form" type="text" name="id" class="form_input" value="{{ Session::get('user.id') }}" onblur="check_email(this)" />
+                <div id="imageBox">
+                    <img id="image" src="{{ asset('storage/profile_images/'.Session::get('user.profile_image')) }}" onclick="clickImage();" alt="プロフィール画像" />
+                    <input type="file" id="avatar" name="profile_image" accept="image/png, image/jpeg" onchange="previewImage(this);">
                 </div>
-                <div class="profile">
-                    <label>新しいニックネーム：</label>
-                    <input class="input_form" type="text" name="nickname" class="form_input" value="{{ Session::get('user.nickname') }}" onblur="check_email(this)" />
-                </div>
-                <div class="profile">
-                    <label>新しいメールアドレス：</label>
-                    <input class="input_form" type="text" name="email" class="form_input" value="{{ Session::get('user.email') }}"　onblur="check_email(this)" />
-                </div>
-                <div class="profile">
-                    <input type="submit" id="button" value="更新する" />
+                <div id="profileBox">
+                    <div class="profile">
+                        <label>新しいニックネーム：</label>
+                        <input type="text" class="input_form" name="nickname" class="form_input" value="{{ Session::get('user.nickname') }}" onblur="check_email(this)" />
+                    </div>
+                    <div class="profile">
+                        <label>新しいメールアドレス：</label>
+                        <input type="text" class="input_form" name="email" class="form_input" value="{{ Session::get('user.email') }}"　onblur="check_email(this)" />
+                    </div>
+                    <div class="profile">
+                        <input type="submit" id="button" value="更新する" />
+                    </div>
                 </div>
             </form>
         </div>
@@ -185,5 +183,20 @@
     </main>
     
     <footer></footer>
+    <script>
+        //画像クリックしたら、fileボタンがクリックされた判定
+        function clickImage() {
+            const avatar = document.getElementById('avatar');
+            avatar.click();
+        }
+        //画像ファイル変更時に、プレビューも変化する
+        function previewImage(obj) {
+            var fileReader = new FileReader();
+            fileReader.onload = (function() {
+                document.getElementById('image').src = fileReader.result;
+            });
+            fileReader.readAsDataURL(obj.files[0]);
+        }
+    </script>
 </body>
 </html>

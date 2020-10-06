@@ -329,7 +329,6 @@
             <input type="text" id="googleEmail" name="email" value=""/>
         </form>
         
-        
         <script>
             /* Googleの標準サインインボタン用関数
             function onSignIn(googleUser) {

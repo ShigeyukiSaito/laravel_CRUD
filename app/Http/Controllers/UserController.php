@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -54,6 +55,7 @@ class UserController extends Controller
             //パスワード暗号化しない（以下）と、ログインvalidationされない（通過してまう）
             //$user->password = $request->password;
             $user->password = Hash::make($request->password);
+            //$user->profile_image = $request->image;
             //$user->user_id = $request->user()->id(); //この書き方謎
             $user->save();
             //セッションにuserの値を保持
@@ -83,10 +85,10 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // 認証に成功した
-            $user = Auth::user(); //これわからん
             // ログイン処理
             \Auth::login($user, true);
+            // 認証に成功した
+            $user = Auth::user();
             
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         }
@@ -137,13 +139,46 @@ class UserController extends Controller
         return $user;
         */
         $id = Auth::id();
-        $user = User::find($id)->first();//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
+        $user = User::find($id);//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
+        //また、$user = User::find($id)->first();とすると、斎藤成志のアカウントの時にSQL Duplicateエラーでた
+        //SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'jokei.72saito82@keio.jp' for key 'users.users_email_unique'
+        
+        /*
         $user->nickname = $request->nickname;
         $user->email = $request->email;
-        $user->save();
+        $user->profile_image = $request->file('image');
+        */
+        $form = $request->all();
+        //return $form;
+
+        $profileImage = $request->file('profile_image');
+        if($profileImage != null) {
+            $form['profile_image'] = $this->saveProfileImage($profileImage, $id); // return file name
+        }
+        //$formの中から、$userに関係ないカラムを除く
+        unset($form['_method']);
+        unset($form['_token']);
+       
+        $user->fill($form)->save();
         //セッションに保存
         Session::put('user', $user);
+        
         return view('user', compact('user'));
+    }
+
+    private function saveProfileImage($image, $id) {
+        // get instance
+        $img = \Image::make($image);
+        // resize
+        $img->fit(100, 100, function($constraint){
+            $constraint->upsize(); 
+        });
+        // save
+        $file_name = 'profile_'.$id.'.'.$image->getClientOriginalExtension();
+        $save_path = 'public/profile_images/'.$file_name;
+        Storage::put($save_path, (string) $img->encode());
+        // return file name
+        return $file_name;
     }
 
     public function delete() {

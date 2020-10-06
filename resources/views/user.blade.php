@@ -156,16 +156,17 @@
         </aside>
         <div class="content">
             <div id="imageBox">
-                <img id="image" src="https://lh3.googleusercontent.com/ogw/ADGmqu-lOHI3wILYfWgBkiQdJ9IMsRArleodzT0frAYF=s32-c-mo" />
+                <img id="image" src="{{ asset('storage/profile_images/'.$user->profile_image) }}" alt="プロフィール画像" />
             </div>
             <div id="profileBox">
                 <div class="profile">
                     <label>ニックネーム：</label>
-                    <span>{{ Session::get('user.nickname') }}</span>
+                    <span>{{ $user->nickname }}</span>
+                    <!-- <span>{{ Session::get('user.nickname') }}</span> -->
                 </div>
                 <div class="profile">
                     <label>メールアドレス：</label>
-                    <span>{{ Session::get('user.email') }}</span>
+                    <span>{{ $user->email }}</span>
                 </div>
                 <div class="profile">
                     <a href="/user/home/edit">編集する</a>       

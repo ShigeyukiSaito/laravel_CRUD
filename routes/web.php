@@ -38,6 +38,7 @@ Route::post('/user/home', 'UserController@GoogleLogin')->name('googleLoginAuth')
 //Route::match(['get', 'post'], '/user/home', 'UserController@show')->name('userLoginAuth');
 Route::put('/user/home', 'UserController@update');
 
+//ユーザ情報編集
 Route::get('/user/home/edit', function() {
     return view('edit_profile');
 });
