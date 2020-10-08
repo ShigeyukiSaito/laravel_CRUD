@@ -106,14 +106,16 @@
             display: none;
         }
         #profileBox {
+            height: 30%;
             position: relative;
             top: 20%;
         }
         .profile {
             width: 80%;
+            height: 40%;
             position: relative;
             left: 10%;
-            margin-bottom: 3%;
+            /*margin-bottom: 3%;*/
         }
         .input_form {
             height: 30px;
@@ -125,6 +127,18 @@
             margin-top: 3%;
             color: red;
             text-decoration: none; 
+        }
+        #error_nickname {
+            font-size: 12px;
+            color: red;
+            position: relative;
+            left: 28%;
+        }
+        #error_email {
+            font-size: 12px;
+            color: red;
+            position: relative;
+            left: 31%;
         }
         footer {
             height: 10%;
@@ -163,27 +177,144 @@
                 <div id="profileBox">
                     <div class="profile">
                         <label>新しいニックネーム：</label>
-                        <input type="text" class="input_form" name="nickname" class="form_input" value="{{ Session::get('user.nickname') }}" onblur="check_email(this)" />
+                        <input type="text" class="input_form" name="nickname" class="form_input" value="{{ Session::get('user.nickname') }}" onblur="check_nickname(this)" />
                     </div>
                     <div class="profile">
                         <label>新しいメールアドレス：</label>
-                        <input type="text" class="input_form" name="email" class="form_input" value="{{ Session::get('user.email') }}"　onblur="check_email(this)" />
+                        <input type="text" class="input_form" name="email" class="form_input" value="{{ Session::get('user.email') }}" onblur="check_email(this)" />
                     </div>
                     <div class="profile">
-                        <input type="submit" id="button" value="更新する" />
+                        <input type="submit" id="button" value="更新する" disabled/>
                     </div>
                 </div>
             </form>
         </div>
-    <!--
-    <p>ニックネーム: {{$nickname ?? ''}}</p>
-    <p>email: {{$email ?? ''}}</p> 
-    <p>password: {{$password ?? ''}}</p>
-    -->
     </main>
     
     <footer></footer>
     <script>
+        //入力バリデーション用変数
+        //各フォームの正規表現（RegExp）
+        const match_nickname = /[\S]/;
+        const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
+
+        //エラーメッセージを生成したかどうかのチェック
+        let nickname_error_message_created = false;
+        let email_error_message_created = false;
+        
+        //エラーメッセージのタグid
+        const nickname_error_id = "error_nickname";
+        const email_error_id = "error_email";
+        
+        //送信ボタン
+        const button = document.getElementById('button');
+
+        //エラーメッセージの内容
+        const null_error_message = "入力してください。";
+        //ニックネーム
+        const nickname_error_message = "フォーマットが正しくありません。";
+        //メールアドレス
+        const email_error_message = "フォーマットが正しくありません。";
+
+        //入力エラーでてないかチェック。エラーなければ送信ボタン押せる。
+        function inputable_check() {
+            if(nickname_error_message_created == true || email_error_message_created == true) {
+                button.disabled = true;
+            } else {
+                button.disabled = false;
+            }
+        }
+        function check_nickname(obj) {
+            let result = obj.value.match(match_nickname);
+
+            if(result != null) {
+                const errorMessage = document.getElementById(nickname_error_id);
+                if(errorMessage) {
+                    errorMessage.parentNode.removeChild(errorMessage);
+                    nickname_error_message_created = false;
+                }
+            }
+            else if(result == null) {
+                if(nickname_error_message_created == false) {
+                    //div生成チェック
+                    nickname_error_message_created = true;
+
+                    switch (obj.value) {
+                        case "":
+                            make_error_message(obj, nickname_error_id, null_error_message);
+                            break;
+                        default :
+                            make_error_message(obj, nickname_error_id, email_error_message);
+                    }
+                }
+                else if(nickname_error_message_created == true) {
+                    switch (obj.value) {
+                        case "":
+                            change_error_massage(nickname_error_id, null_error_message);
+                            break;
+                        default :
+                            change_error_massage(nickname_error_id, nickname_error_message);   
+                    }
+                }
+            }
+            inputable_check();
+        }
+        function check_email(obj) {
+            //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9
+            let result = obj.value.match(match_email);
+
+            if(result != null) {
+                //https://developer.mozilla.org/ja/docs/Web/API/Document/getElementsByTagName
+                const errorMessage = document.getElementById(email_error_id);
+                //エラーメッセージの削除メソッドについてはMozillaのサイトを参考https://developer.mozilla.org/ja/docs/Web/API/Node/removeChild
+                if(errorMessage) {
+                    errorMessage.parentNode.removeChild(errorMessage);
+                    email_error_message_created = false;
+                }
+            }
+            else if(result == null) {
+                if(email_error_message_created == false) {
+                    //div生成チェック
+                    email_error_message_created = true;
+
+                    switch (obj.value) {
+                        case "":
+                            make_error_message(obj, email_error_id, null_error_message);
+                            break;
+                        default :
+                            make_error_message(obj, email_error_id, email_error_message);
+                    }
+                }
+                else if(email_error_message_created == true) {
+                    switch (obj.value) {
+                        case "":
+                            change_error_massage(email_error_id, null_error_message);
+                            break;
+                        default :
+                            change_error_massage(email_error_id, email_error_message);   
+                    }
+                }
+            }
+            inputable_check();
+        }
+        //エラーメッセージ生成
+        function make_error_message(obj, id, message) {
+            //タグの生成
+            const errorMessage = document.createElement('div'); 
+            errorMessage.setAttribute('id', id);
+
+            //objの親要素に、子要素としてエラーメッセージを追加する
+            obj.parentNode.appendChild(errorMessage);
+            errorMessage.innerHTML = message;
+        }
+        //エラーメッセージ変更
+        function change_error_massage(id, message) {
+            //すでに作ったエラーのdivを拾ってきて
+            let errorMessage = document.getElementById(id);
+            //中身変える
+            errorMessage.innerHTML = message;
+        }
+
         //画像クリックしたら、fileボタンがクリックされた判定
         function clickImage() {
             const avatar = document.getElementById('avatar');
@@ -197,6 +328,7 @@
             });
             fileReader.readAsDataURL(obj.files[0]);
         }
+
     </script>
 </body>
 </html>

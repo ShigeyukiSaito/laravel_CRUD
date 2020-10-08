@@ -38,7 +38,7 @@
                 //フォームにgoogleアカウントのデータを入力
                 document.getElementById('user_nickname').value = googleUser.getBasicProfile().getName();
                 document.getElementById('user_email').value = googleUser.getBasicProfile().getEmail();
-                //document.getElementById('user_image').value = googleUser.getBasicProfile().getImageUrl();
+                document.getElementById('user_image').value = googleUser.getBasicProfile().getImageUrl();
             });
     }
     </script>
@@ -202,12 +202,11 @@
                 <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" onblur="check_password(this)" autocomplete="off" /*onmouseleave="check_password(this)"*/ required/>
             </div>
             <!--画面上に表示しない-->
-            <!--
             <div class="form_tag" hidden>
                 <label>プロフィール画像</label>
                 <input type="text" id="user_image" name="image" class="form_input" />
             </div>
-    -->
+            
             <div class="button_tag">
                 <input type="submit" id="button" value="確認に進む" disabled/>
             </div>

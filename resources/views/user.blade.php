@@ -171,7 +171,6 @@
                 <div class="profile">
                     <label>ニックネーム：</label>
                     <span>{{ $user->nickname }}</span>
-                    <!-- <span>{{ Session::get('user.nickname') }}</span> -->
                 </div>
                 <div class="profile">
                     <label>メールアドレス：</label>
@@ -185,11 +184,6 @@
                 
             </div>
         </div>
-    <!--
-    <p>ニックネーム: {{$nickname ?? ''}}</p>
-    <p>email: {{$email ?? ''}}</p> 
-    <p>password: {{$password ?? ''}}</p>
-    -->
     </main>
     
     <footer></footer>
