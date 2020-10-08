@@ -55,7 +55,13 @@ class UserController extends Controller
             //パスワード暗号化しない（以下）と、ログインvalidationされない（通過してまう）
             //$user->password = $request->password;
             $user->password = Hash::make($request->password);
-            //$user->profile_image = $request->image;
+
+            if($request->image != null) {
+                $user->profile_image = $request->image;
+            } else {
+                $user->profile_image = "default.png";
+            }
+            
             //$user->user_id = $request->user()->id(); //この書き方謎
             $user->save();
             //セッションにuserの値を保持
@@ -63,6 +69,7 @@ class UserController extends Controller
 
             // ログイン処理
             \Auth::login($user, true);
+
             return view('user', compact('user'));
         /*
             //Qiitaのサイト見て（これはrequestがJSON形式の場合？）
@@ -184,7 +191,7 @@ class UserController extends Controller
     public function delete() {
         $id = Auth::id();
         if($id != null) {
-            $user = User::find($id)->first();
+            $user = User::find($id);//->first(); //first書いたら、一番上のidのユーザー消されてまう。
             Auth::logout();
             $user->delete();
         } 

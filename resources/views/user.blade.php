@@ -156,7 +156,16 @@
         </aside>
         <div class="content">
             <div id="imageBox">
-                <img id="image" src="{{ asset('storage/profile_images/'.$user->profile_image) }}" alt="プロフィール画像" />
+                <?php
+                    if(\File::exists('storage/profile_images/'.$user->profile_image)):
+                    //以下のように2行に分けて書いた場合、プロフ画像は表示されない
+                    //$save_path = 'public/profile_images/'.$user->profile_image; 
+                    //if(\File::exists($save_path)):  
+                ?>
+                    <img id="image" src="{{ asset('storage/profile_images/'.$user->profile_image) }}" alt="プロフィール画像" />
+                <?php else: ?>
+                    <img id="image" src="{{ $user->profile_image }}" alt="プロフィール画像" />
+                <?php endif; ?>
             </div>
             <div id="profileBox">
                 <div class="profile">
