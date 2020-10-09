@@ -160,7 +160,7 @@ class UserController extends Controller
 
         $profileImage = $request->file('profile_image');
         if($profileImage != null) {
-            $form['profile_image'] = $this->saveProfileImage($profileImage, $id); // return file name
+            $form['profile_image'] = $this->saveProfileImage($profileImage, $id); //ファイル名の設定
         }
         //$formの中から、$userに関係ないカラムを除く
         unset($form['_method']);
@@ -174,17 +174,17 @@ class UserController extends Controller
     }
 
     private function saveProfileImage($image, $id) {
-        // get instance
+        //インスタンスの取得
         $img = \Image::make($image);
-        // resize
-        $img->fit(100, 100, function($constraint){
+        //サイズ調整
+        $img->fit(300, 300, function($constraint){
             $constraint->upsize(); 
         });
-        // save
+        //ファイル名とパスを保存
         $file_name = 'profile_'.$id.'.'.$image->getClientOriginalExtension();
         $save_path = 'public/profile_images/'.$file_name;
         Storage::put($save_path, (string) $img->encode());
-        // return file name
+        
         return $file_name;
     }
 

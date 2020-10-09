@@ -177,9 +177,9 @@
                     //$save_path = 'public/profile_images/'.$user->profile_image; 
                     //if(\File::exists($save_path)):  
                 ?>
-                    <img id="image" src="{{ asset('storage/profile_images/'.Session::get('user.profile_image')) }}" alt="プロフィール画像" />
+                    <img id="image" src="{{ asset('storage/profile_images/'.Session::get('user.profile_image')) }}" alt="プロフィール画像" onclick="clickImage()"/>
                 <?php else: ?>
-                    <img id="image" src="{{ Session::get('user.profile_image') }}" alt="プロフィール画像" />
+                    <img id="image" src="{{ Session::get('user.profile_image') }}" alt="プロフィール画像" onclick="clickImage()"/>
                 <?php endif; ?>
                     <input type="file" id="avatar" name="profile_image" accept="image/png, image/jpeg" onchange="previewImage(this);">
                 </div>
