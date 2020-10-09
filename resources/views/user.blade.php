@@ -121,7 +121,7 @@
         }
         .profile > a {
             position: absolute;
-            right: 25%;
+            right: 0%;
             color: red;
             text-decoration: none;
         }
@@ -177,7 +177,7 @@
                     <span>{{ $user->email }}</span>
                 </div>
                 <div class="profile">
-                    <a href="/user/home/edit">編集する</a>       
+                    <a href="/user/home/edit">プロフィール情報を編集する</a>       
                 </div>
             </div>
             <div id="content-footer">

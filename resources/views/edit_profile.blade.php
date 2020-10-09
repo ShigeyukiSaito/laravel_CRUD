@@ -171,7 +171,16 @@
                 @method('PUT')
                 @csrf
                 <div id="imageBox">
-                    <img id="image" src="{{ asset('storage/profile_images/'.Session::get('user.profile_image')) }}" onclick="clickImage();" alt="プロフィール画像" />
+                <?php
+                    if(\File::exists('storage/profile_images/'.Session::get('user.profile_image'))):
+                    //以下のように2行に分けて書いた場合、プロフ画像は表示されない
+                    //$save_path = 'public/profile_images/'.$user->profile_image; 
+                    //if(\File::exists($save_path)):  
+                ?>
+                    <img id="image" src="{{ asset('storage/profile_images/'.Session::get('user.profile_image')) }}" alt="プロフィール画像" />
+                <?php else: ?>
+                    <img id="image" src="{{ Session::get('user.profile_image') }}" alt="プロフィール画像" />
+                <?php endif; ?>
                     <input type="file" id="avatar" name="profile_image" accept="image/png, image/jpeg" onchange="previewImage(this);">
                 </div>
                 <div id="profileBox">
