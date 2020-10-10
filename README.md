@@ -1,3 +1,7 @@
+## About
+このアプリケーションは、Laravelの勉強用に作りました。
+CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
+<!--
 <<<<<<< HEAD
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
