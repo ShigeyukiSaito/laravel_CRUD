@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
+use Google_Client;
 
 class UserController extends Controller
 {
@@ -103,6 +104,26 @@ class UserController extends Controller
     }
 
     public function GoogleLogin(Request $request) {
+        $id_token = $request->id_token;//filter_input(INPUT_POST, 'id_token');
+        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);  // Specify the CLIENT_ID of the app that accesses the backend
+        //dd($client);
+        $payload = $client->verifyIdToken($id_token);
+        if ($payload) {
+            //$userid = $payload['sub'];
+            $email = $payload['email'];
+            $user = User::where('email', $email)->first();
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+            // ログイン処理
+            \Auth::login($user, true);
+
+            return view('user', compact('user'));//redirect('/user');//->intended('dashboard
+            // If request specified a G Suite domain:
+            //$domain = $payload['hd'];
+        } else {
+            // Invalid ID token
+            return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
+        }
         /*JSONリクエストを受ける
         $user = $request->all();
         $nickname = $request->input('data.nickname');

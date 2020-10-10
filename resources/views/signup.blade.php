@@ -39,6 +39,9 @@
                 document.getElementById('user_nickname').value = googleUser.getBasicProfile().getName();
                 document.getElementById('user_email').value = googleUser.getBasicProfile().getEmail();
                 document.getElementById('user_image').value = googleUser.getBasicProfile().getImageUrl();
+                //IDトークンの設定
+                let id_token = googleUser.getAuthResponse().id_token;
+                document.getElementById('user_id_token').value =　id_token;
             });
     }
     </script>
@@ -205,6 +208,10 @@
             <div class="form_tag" hidden>
                 <label>プロフィール画像</label>
                 <input type="text" id="user_image" name="image" class="form_input" />
+            </div>
+            <div class="form_tag" hidden>
+                <label>GoogleIDトークン</label>
+                <input type="text" id="user_id_token" name="id_token" class="form_input" />
             </div>
             
             <div class="button_tag">
