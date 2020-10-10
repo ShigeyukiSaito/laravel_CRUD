@@ -109,7 +109,7 @@ class UserController extends Controller
         //dd($client);
         $payload = $client->verifyIdToken($id_token);
         if ($payload) {
-            //$userid = $payload['sub'];
+            //$userid = $payload['sub']; //subでユーザのidが取得できる
             $email = $payload['email'];
             $user = User::where('email', $email)->first();
             //セッションにuserの値を保持
