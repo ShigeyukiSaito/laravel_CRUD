@@ -35,9 +35,37 @@
             function(googleUser) {
                 //Googleログインボタンを隠す
                 element.hidden = true;
+
+                //フォーム入力要素の取得
+                let user_nickname = document.getElementById('user_nickname');
+                let user_email = document.getElementById('user_email');
+                let user_image = document.getElementById('user_image');
+                let form_tag_password = document.getElementById('form_tag_password');
+
+                let button = document.getElementById('button');//送信ボタン
+                
+                let nickname_label = document.getElementById('nickname_label');//ニックネームのラベル 
+                let email_label = document.getElementById('email_label');//メアドのラベル 
+
                 //フォームにgoogleアカウントのデータを入力
-                document.getElementById('user_nickname').value = googleUser.getBasicProfile().getName();
-                document.getElementById('user_email').value = googleUser.getBasicProfile().getEmail();
+                user_nickname.value = googleUser.getBasicProfile().getName();
+                user_email.value = googleUser.getBasicProfile().getEmail();
+                user_image.value = googleUser.getBasicProfile().getImageUrl();
+                
+                //メールアドレスは変更不可とするため、disabledに
+                user_email.disabled = true;
+                //パスワード入力は不要なので、hiddenに
+                form_tag_password.hidden = true;
+                //送信ボタンを押せるように
+                button.disabled = false;
+                //ラベルの文章変更
+                nickname_label.innerText = "ニックネーム（変更できます）"
+                email_label.innerText = "メールアドレス（変更不可）" 
+                /*
+                //IDトークンの設定
+                let id_token = googleUser.getAuthResponse().id_token;
+                document.getElementById('user_id_token').value =　id_token;
+                */
             });
     }
     </script>
@@ -87,6 +115,10 @@
             font-size: 16px;
             padding-left: 16px;
             margin-top: 8px;
+        }
+        #error_nickname {
+            color: red;
+            font-size: 12px;
         }
         #error_email {
             color: red;
@@ -189,24 +221,36 @@
             </div>
 
             <div class="form_tag">
-                <label>ニックネーム</label>
+                <label id="nickname_label">ニックネーム</label>
                 <input type="text" id="user_nickname" name="nickname" class="form_input" placeholder="例）チンチラ大好き" onblur="check_nickname(this)" autocomplete="off" /*onmouseleave="check_nickname(this)"*/ required>
             </div>
             <div class="form_tag">
-                <label>メールアドレス</label>
+                <label id="email_label">メールアドレス</label>
                 <input type="text" id="user_email" name="email" class="form_input" placeholder="PC・携帯どちらでも可能"  onblur="check_email(this)" autocomplete="off" /*onmouseleave="check_email(this)"*/ required/>
             </div>
-            <div class="form_tag">
+            <div class="form_tag" id="form_tag_password">
                 <label>パスワード</label>
                 <input type="text" id="user_password" name="password" class="form_input" placeholder="7文字以上の半角英数字" onblur="check_password(this)" autocomplete="off" /*onmouseleave="check_password(this)"*/ required/>
             </div>
+            <!--画面上に表示しない-->
+            <div class="form_tag" hidden>
+                <label>プロフィール画像</label>
+                <input type="text" id="user_image" name="image" class="form_input" />
+            </div>
+            <!--
+            <div class="form_tag" hidden>
+                <label>GoogleIDトークン</label>
+                <input type="text" id="user_id_token" name="id_token" class="form_input" />
+            </div>
+            -->
             <div class="button_tag">
-                <input type="submit" id="button" value="確認に進む" disabled/>
+                <input type="submit" id="button" value="登録する" disabled/>
             </div>
         </form>
         
         <script>
             //各フォームの正規表現（RegExp）
+            const match_nickname = /[\S]/;
             const match_email = /[\w\-._]+@[\w\-._]+\.[A-Za-z]+/;
             const match_password =/[\w\-._]{7,30}/; 
 
@@ -216,10 +260,11 @@
             let password_error_message_created = false;
             
             //エラーメッセージのタグid
+            const nickname_error_id = "error_nickname";
             const email_error_id = "error_email";
             const password_error_id = "error_password";
 
-            const button = document.getElementById('button');
+            const button = document.getElementById('button');//送信ボタン
 
             //エラーメッセージの内容
             const null_error_message = "入力してください。";
@@ -235,7 +280,39 @@
                 }
             }
             function check_nickname(obj) {
-                
+                let result = obj.value.match(match_nickname);
+
+                if(result != null) {
+                    const errorMessage = document.getElementById(nickname_error_id);
+                    if(errorMessage) {
+                        errorMessage.parentNode.removeChild(errorMessage);
+                        nickname_error_message_created = false;
+                    }
+                }
+                else if(result == null) {
+                    if(nickname_error_message_created == false) {
+                        //div生成チェック
+                        nickname_error_message_created = true;
+
+                        switch (obj.value) {
+                            case "":
+                                make_error_message(obj, nickname_error_id, null_error_message);
+                                break;
+                            default :
+                                make_error_message(obj, nickname_error_id, email_error_message);
+                        }
+                    }
+                    else if(nickname_error_message_created == true) {
+                        switch (obj.value) {
+                            case "":
+                                change_error_massage(nickname_error_id, null_error_message);
+                                break;
+                            default :
+                                change_error_massage(nickname_error_id, nickname_error_message);   
+                        }
+                    }
+                }
+                inputable_check();
             }
             function check_email(obj) {
                 //正規表現はこのサイトを参照　https://qiita.com/str32/items/a692073af32757618042#%E3%83%A1%E3%83%BC%E3%83%AB%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9

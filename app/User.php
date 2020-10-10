@@ -15,5 +15,5 @@ class User extends Authenticatable //class User extends Model
 
     //以下のfillable〜を書いた理由は、react導入して--authしてからsqlエラーでたのを解消するため↓
     //SQLSTATE[HY000]: General error: 1364 Field 'email' doesn't have a default value 
-    protected $fillable = ['nickname', 'email', 'password'];
+    protected $fillable = ['nickname', 'email', 'password', 'profile_image'];
 }

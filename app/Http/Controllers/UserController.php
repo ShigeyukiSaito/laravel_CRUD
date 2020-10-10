@@ -6,8 +6,11 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
+use Google_Client;
 
 class UserController extends Controller
 {
@@ -53,8 +56,21 @@ class UserController extends Controller
             //パスワード暗号化しない（以下）と、ログインvalidationされない（通過してまう）
             //$user->password = $request->password;
             $user->password = Hash::make($request->password);
+
+            if($request->image != null) {
+                $user->profile_image = $request->image;
+            } else {
+                $user->profile_image = "default.png";
+            }
+            
             //$user->user_id = $request->user()->id(); //この書き方謎
             $user->save();
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+
+            // ログイン処理
+            \Auth::login($user, true);
+
             return view('user', compact('user'));
         /*
             //Qiitaのサイト見て（これはrequestがJSON形式の場合？）
@@ -77,16 +93,37 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            // ログイン処理
+            \Auth::login($user, true);
             // 認証に成功した
-            $user = Auth::user(); //これわからん
+            $user = Auth::user();
+            
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         }
         return redirect('/signin')->with(array('error_message' => "メールアドレスかパスワードが間違っています。", 'authentificated' => false));
-        // ログイン処理
-        \Auth::login($user, true);
     }
 
     public function GoogleLogin(Request $request) {
+        $id_token = $request->id_token;//filter_input(INPUT_POST, 'id_token');
+        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);  // Specify the CLIENT_ID of the app that accesses the backend
+        //dd($client);
+        $payload = $client->verifyIdToken($id_token);
+        if ($payload) {
+            //$userid = $payload['sub']; //subでユーザのidが取得できる
+            $email = $payload['email'];
+            $user = User::where('email', $email)->first();
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+            // ログイン処理
+            \Auth::login($user, true);
+
+            return view('user', compact('user'));//redirect('/user');//->intended('dashboard
+            // If request specified a G Suite domain:
+            //$domain = $payload['hd'];
+        } else {
+            // Invalid ID token
+            return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
+        }
         /*JSONリクエストを受ける
         $user = $request->all();
         $nickname = $request->input('data.nickname');
@@ -105,6 +142,13 @@ class UserController extends Controller
         if($user != null) {
             // 認証に成功した
             //$user = Auth::user(); //上のif文でAuth::attempts使ってないのにいきなりここで使えんのか？
+
+            //セッションにuserの値を保持
+            Session::put('user', $user);
+
+            // ログイン処理
+            \Auth::login($user, true);
+            
             return view('user', compact('user'));//redirect('/user');//->intended('dashboard');
         } else {
             return back()->with(array('error_message' => "Googleでの登録情報はありません。他の方法でログインをお試しください。", 'authentificated' => false));
@@ -115,6 +159,65 @@ class UserController extends Controller
         Auth::logout();
         return view('welcome');
     }
+
+    public function update(Request $request) {
+        //return $request;
+        /*
+        $user = Auth::user();
+        return $user;
+        */
+        $id = Auth::id();
+        $user = User::find($id);//Auth::user()で取得すると、後のsaveが使えない。どちらの$userも同じ表示ではある。
+        //また、$user = User::find($id)->first();とすると、斎藤成志のアカウントの時にSQL Duplicateエラーでた
+        //SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'jokei.72saito82@keio.jp' for key 'users.users_email_unique'
+        
+        /*
+        $user->nickname = $request->nickname;
+        $user->email = $request->email;
+        $user->profile_image = $request->file('image');
+        */
+        $form = $request->all();
+        //return $form;
+
+        $profileImage = $request->file('profile_image');
+        if($profileImage != null) {
+            $form['profile_image'] = $this->saveProfileImage($profileImage, $id); //ファイル名の設定
+        }
+        //$formの中から、$userに関係ないカラムを除く
+        unset($form['_method']);
+        unset($form['_token']);
+       
+        $user->fill($form)->save();
+        //セッションに保存
+        Session::put('user', $user);
+        
+        return view('user', compact('user'));
+    }
+
+    private function saveProfileImage($image, $id) {
+        //インスタンスの取得
+        $img = \Image::make($image);
+        //サイズ調整
+        $img->fit(300, 300, function($constraint){
+            $constraint->upsize(); 
+        });
+        //ファイル名とパスを保存
+        $file_name = 'profile_'.$id.'.'.$image->getClientOriginalExtension();
+        $save_path = 'public/profile_images/'.$file_name;
+        Storage::put($save_path, (string) $img->encode());
+        
+        return $file_name;
+    }
+
+    public function delete() {
+        $id = Auth::id();
+        if($id != null) {
+            $user = User::find($id);//->first(); //first書いたら、一番上のidのユーザー消されてまう。
+            Auth::logout();
+            $user->delete();
+        } 
+        return view('unsubscribe'); 
+    } 
 
     //これ、別のコントローラに写した方がよくね？
     public function password_reset() {

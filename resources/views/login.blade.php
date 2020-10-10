@@ -36,17 +36,40 @@
         console.log(element.id);
         auth2.attachClickHandler(element, {},
             function(googleUser) {
+                /*
+                var id_token = googleUser.getAuthResponse().id_token;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/user/home');
+                xhr.setRequestHeader('Content-Type', 'application/json'); //application/x-www-form-urlencoded
+                
+                let token = document.getElementsByName("csrf-token").item(0).content;
+                xhr.setRequestHeader('X-CSRF-TOKEN', token);
+
+                xhr.onload = function() {
+                    console.log('Signed in as: ' + xhr.responseText);
+                };
+                xhr.send('idtoken=' + id_token);
+                */
+                
                 //ユーザ認証のためのデータ送信（フォームPOST）
                 let f = document.getElementById("googleForm");
+                let input_google_id = document.getElementById('googleId');
                 let input_nickname = document.getElementById('googleNickname');
                 let input_email = document.getElementById('googleEmail');
+                //IDトークンの設定
+                let input_id_token = document.getElementById('google_id_token');
 
-                //ユーザ情報の取得   
-                let nickname = googleUser.getBasicProfile().getName();
-                let email = googleUser.getBasicProfile().getEmail();
-                
+                //ユーザ情報の取得
+                let profile = googleUser.getBasicProfile();
+                let google_id = profile.getId()
+                let nickname = profile.getName();
+                let email = profile.getEmail();
+                let id_token = googleUser.getAuthResponse().id_token;
+
+                input_google_id.value = google_id;
                 input_nickname.value = nickname;
                 input_email.value = email;
+                input_id_token.value = id_token;
 
                 //submit()で情報送信
                 f.submit();
@@ -319,16 +342,17 @@
                 <input type="submit" id="button" value="確認に進む" disabled/>
             </div>
             <div id="password_reset"><a href="/password_reset">パスワードをお忘れの方</a></div>
-            <div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>
+            <!--<div id="logout"><a href="/" onclick="signOut();">ログアウトする</a></div>-->
         </form>
 
         <!--Googleログインする用のフォーム-->
         <form id="googleForm" action="{{ action('UserController@GoogleLogin') }}" method="post" hidden>
         @csrf
+            <input type="text" id="googleId" name="google_id" value=""/>
             <input type="text" id="googleNickname" name="nickname" value=""/>
             <input type="text" id="googleEmail" name="email" value=""/>
+            <input type="text" id="google_id_token" name="id_token" value=""/>
         </form>
-        
         
         <script>
             /* Googleの標準サインインボタン用関数
