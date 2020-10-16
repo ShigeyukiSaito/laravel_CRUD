@@ -11,7 +11,6 @@ CRUD機能を実装しています。ログインにはGoogleアカウントも�
 - パッケージ
     - Intervention Image: ^2.5
 <br>
-<br>
 
 ### アプリ起動方法
 Laravelのローカルサーバーで起動します。
