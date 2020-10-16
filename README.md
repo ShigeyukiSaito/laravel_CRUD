@@ -1,6 +1,32 @@
 ## About
 このアプリケーションは、Laravelの勉強用に作りました。
 CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
+<br>
+<br>
+
+### Version
+- Composer: version 1.10.10
+- PHP: 7.4.9
+- Laravel Framework: 7.26.1
+- パッケージ
+    - Intervention Image: ^2.5
+<br>
+<br>
+
+### アプリ起動方法
+Laravelのローカルサーバーで起動します。
+#### 
+    php artisan serve
+<br>
+
+### データベース起動関連
+データベースへのアクセスにはmysqlを使用します。
+#### ・mysql起動
+    mysql.server start
+#### ・mysqlログイン
+    mysql -uroot -p 
+ここでパスワードが求められるので、secretを入力してください。
+
 <!--
 <<<<<<< HEAD
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
