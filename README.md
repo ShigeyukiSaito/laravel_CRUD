@@ -1,5 +1,5 @@
 ## About
-&emsp;このアプリケーションは、Laravelの勉強用に作りました。CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
+このアプリケーションは、Laravelの勉強用に作りました。CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
 <br>
 <br>
 
@@ -12,10 +12,10 @@
     - Socialite: ^5.0
     - Google API Client: ^2.7
 <br>
+<br>
 
 ### アプリ起動方法
-&emsp;Laravelのローカルサーバーで起動します。<br>
-アプリケーション起動前に、作業ディレクトリにcomposerをインストールしてください。インストールしている場合は、composer updateを行ってください。
+Laravelのローカルサーバーで起動します。アプリケーション起動前に、作業ディレクトリにcomposerをインストールしてください。インストールしている場合は、composer updateを行ってください。
 #### 
     composer install
 #### 
@@ -23,27 +23,33 @@
 <br>
 
 ### 使用ライブラリのインストール
-&emsp;composerを用いて、各自でパッケージをインストールしてください。
-#### 例）Intervention Imageの場合
+composerを用いて、各自でパッケージをインストールしてください。
+<br>
+
+例）Intervention Imageの場合
+####
     composer require intervention/image
 <br>
 
 ### データベース起動関連
-&emsp;データベースへのアクセスにはmysqlを使用します。
+データベースへのアクセスにはmysqlを使用します。
 #### ・mysql起動
     mysql.server start
+<br>
+
 #### ・mysqlログイン
     mysql -uroot -p 
-&emsp;ここでパスワードが求められるので、secretを入力してください。
+ここでパスワードが求められるので、secretを入力してください。
+<br>
 <br>
 
 #### ・データベースとテーブルの作成
-&emsp;データベース名はtrialにしています（.envファイルのDB_DATABASEに指定・変更可能です）。
+データベース名はtrialにしています（.envファイルのDB_DATABASEに指定・変更可能です）。
 #####
     mysql> CREATE DATABASE　`trial`;
 <br>
 
-&emsp;テーブル作成は、マイグレーションを行ってください。
+テーブル作成のためにはマイグレーションを行ってください。
 #####
     php artisan migrate
 <br>
