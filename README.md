@@ -10,12 +10,23 @@ CRUD機能を実装しています。ログインにはGoogleアカウントも�
 - Laravel Framework: 7.26.1
 - パッケージ
     - Intervention Image: ^2.5
+    - Socialite: ^5.0
+    - Google API Client: ^2.7
 <br>
 
 ### アプリ起動方法
-Laravelのローカルサーバーで起動します。
+Laravelのローカルサーバーで起動します。<br>
+アプリケーション起動前に、作業ディレクトリにcomposerをインストールしてください。インストールしている場合は、composer updateを行ってください。
+#### 
+    composer install
 #### 
     php artisan serve
+<br>
+
+### 使用ライブラリのインストール
+composerを用いて、各自でパッケージをインストールしてください。
+#### 例）Intervention Imageの場合
+    composer require intervention/image
 <br>
 
 ### データベース起動関連
@@ -25,6 +36,14 @@ Laravelのローカルサーバーで起動します。
 #### ・mysqlログイン
     mysql -uroot -p 
 ここでパスワードが求められるので、secretを入力してください。
+<br>
+
+#### データベースとテーブルの作成
+##### データベース名はtrialにしています（.envファイルのDB_DATABASEに指定・変更可能です）。
+    mysql> CREATE DATABASE　`trial`;
+##### テーブル作成は、マイグレーションを行ってください。
+    php artisan migrate
+<br>
 
 <!--
 <<<<<<< HEAD
