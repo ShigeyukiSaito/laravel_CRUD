@@ -1,6 +1,5 @@
 ## About
-このアプリケーションは、Laravelの勉強用に作りました。
-CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
+&emsp;このアプリケーションは、Laravelの勉強用に作りました。CRUD機能を実装しています。ログインにはGoogleアカウントも使用できます。
 <br>
 <br>
 
@@ -15,7 +14,7 @@ CRUD機能を実装しています。ログインにはGoogleアカウントも�
 <br>
 
 ### アプリ起動方法
-Laravelのローカルサーバーで起動します。<br>
+&emsp;Laravelのローカルサーバーで起動します。<br>
 アプリケーション起動前に、作業ディレクトリにcomposerをインストールしてください。インストールしている場合は、composer updateを行ってください。
 #### 
     composer install
@@ -24,26 +23,28 @@ Laravelのローカルサーバーで起動します。<br>
 <br>
 
 ### 使用ライブラリのインストール
-composerを用いて、各自でパッケージをインストールしてください。
+&emsp;composerを用いて、各自でパッケージをインストールしてください。
 #### 例）Intervention Imageの場合
     composer require intervention/image
 <br>
 
 ### データベース起動関連
-データベースへのアクセスにはmysqlを使用します。
+&emsp;データベースへのアクセスにはmysqlを使用します。
 #### ・mysql起動
     mysql.server start
 #### ・mysqlログイン
     mysql -uroot -p 
-ここでパスワードが求められるので、secretを入力してください。
+&emsp;ここでパスワードが求められるので、secretを入力してください。
+
 <br>
 
 #### ・データベースとテーブルの作成
-データベース名はtrialにしています（.envファイルのDB_DATABASEに指定・変更可能です）。
+&emsp;データベース名はtrialにしています（.envファイルのDB_DATABASEに指定・変更可能です）。
 #####
     mysql> CREATE DATABASE　`trial`;
+<br>
 
-テーブル作成は、マイグレーションを行ってください。
+&emsp;テーブル作成は、マイグレーションを行ってください。
 #####
     php artisan migrate
 <br>
